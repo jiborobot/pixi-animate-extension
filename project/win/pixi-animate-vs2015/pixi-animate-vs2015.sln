@@ -1,12 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pixi-animate-vs2015", "pixi-animate-vs2015\pixi-animate-vs2015.vcxproj", "{FC335319-C157-4369-8E78-4AE46720E535}"
-	ProjectSection(ProjectDependencies) = postProject
-		{152CE948-F659-4206-A50A-1D2B9658EF96} = {152CE948-F659-4206-A50A-1D2B9658EF96}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,40 +57,11 @@ Global
 		{FC335319-C157-4369-8E78-4AE46720E535}.Template|x64.Build.0 = Release|x64
 		{FC335319-C157-4369-8E78-4AE46720E535}.Template|x86.ActiveCfg = Release|Win32
 		{FC335319-C157-4369-8E78-4AE46720E535}.Template|x86.Build.0 = Release|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Debug|x64.ActiveCfg = Debug|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Debug|x64.Build.0 = Debug|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Debug|x86.ActiveCfg = Debug|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Debug|x86.Build.0 = Debug|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.ICU Debug|x64.ActiveCfg = ICU Debug|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.ICU Debug|x64.Build.0 = ICU Debug|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.ICU Debug|x86.ActiveCfg = ICU Debug|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.ICU Debug|x86.Build.0 = ICU Debug|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.ICU Release|x64.ActiveCfg = ICU Release|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.ICU Release|x64.Build.0 = ICU Release|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.ICU Release|x86.ActiveCfg = ICU Release|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.ICU Release|x86.Build.0 = ICU Release|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Release|x64.ActiveCfg = Release|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Release|x64.Build.0 = Release|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Release|x86.ActiveCfg = Release|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Release|x86.Build.0 = Release|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.small|x64.ActiveCfg = Static Debug|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.small|x64.Build.0 = Static Debug|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.small|x86.ActiveCfg = Static Debug|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.small|x86.Build.0 = Static Debug|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Static Debug|x64.ActiveCfg = Static Debug|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Static Debug|x64.Build.0 = Static Debug|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Static Debug|x86.ActiveCfg = Static Debug|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Static Debug|x86.Build.0 = Static Debug|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Static Release|x64.ActiveCfg = Static Release|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Static Release|x64.Build.0 = Static Release|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Static Release|x86.ActiveCfg = Static Release|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Static Release|x86.Build.0 = Static Release|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Template|x64.ActiveCfg = Release|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Template|x64.Build.0 = Release|x64
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Template|x86.ActiveCfg = Release|Win32
-		{152CE948-F659-4206-A50A-1D2B9658EF96}.Template|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {05E0F046-2624-4509-A5E2-D4CB9F147357}
 	EndGlobalSection
 EndGlobal

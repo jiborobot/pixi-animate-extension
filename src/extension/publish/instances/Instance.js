@@ -22,13 +22,13 @@ const Instance = function(libraryItem, id)
      */
     this.id = id;
 
-    /** 
+    /**
      * The name of the item
      * @property {string} name
      */
     this.localName = "instance" + id;
 
-    /** 
+    /**
      * The instance name, if named
      * @property {string} instanceName
      */
@@ -54,13 +54,13 @@ const Instance = function(libraryItem, id)
      */
     this.libraryItem = libraryItem;
 
-    /** 
+    /**
      * Initially place the item
      * @property {Frame} initFrame
      */
     this.initFrame = null;
 
-    /** 
+    /**
      * Instance id to place after
      * @property {int} placeAfter
      */
@@ -86,7 +86,7 @@ const Instance = function(libraryItem, id)
      */
     this.renderable = true;
 
-    /** 
+    /**
      * If this instance is animated
      * @property {Boolean} isAnimated
      * @default false
@@ -143,7 +143,7 @@ p.addToFrame = function(frameIndex, command)
     frame.addCommand(command);
 
     // Remove empty frames
-    if (!Object.keys(frame).length) 
+    if (!Object.keys(frame).length)
     {
         delete this.frames[frameIndex];
     }
@@ -159,6 +159,55 @@ p.addToFrame = function(frameIndex, command)
     }
 };
 
+p.startTween = function(frameIndex, tween)
+{
+    let frame = this.frames[frameIndex];
+    if (!frame) {
+        frame = this.frames[frameIndex] = new Frame();
+    }
+    frame.addTween(tween);
+    this.isAnimated = true;
+};
+
+/**
+ * Searches backwards to find the transformation values on a given frame.
+ */
+p.getTransformForFrame = function(frameIndex)
+{
+    let tweenResults = {};
+    for (let i = frameIndex; i >= 0; --i)
+    {
+        const frame = this.frames[i];
+        if (!frame) continue;
+
+        if (frame.tween)
+        {
+            // take into account any tweens we see along the way as they change the ending frame values
+            tweenResults = Object.assign({}, frame.tween.toJSON().p, tweenResults);
+        }
+        // if there is any transformation property, it has all of them and we just need to merge tween values
+        if (frame.x !== null) return Object.assign({}, frame, tweenResults);
+    }
+    return null;
+}
+
+p.getTweenEndingOnFrame = function(frameIndex)
+{
+    if (!frameIndex) return null;
+
+    for (let i = 0; i < frameIndex; ++i)
+    {
+        const frame = this.frames[i];
+        if (!frame) continue;
+
+        if (frame.tween && frame.tween.endFrame === frameIndex)
+        {
+            return frame.tween;
+        }
+    }
+    return null;
+}
+
 /**
  * Get the duration of this item on the stage
  * @method getDuration
@@ -167,8 +216,8 @@ p.addToFrame = function(frameIndex, command)
  */
 p.getDuration = function(totalFrames)
 {
-    return this.endFrame > 0 ? 
-        this.endFrame - this.startFrame : 
+    return this.endFrame > 0 ?
+        this.endFrame - this.startFrame :
         totalFrames - this.startFrame;
 };
 
@@ -196,7 +245,7 @@ p.getFrames = function(compress)
     {
         let frame = this.frames[index];
         let cloneFrame = Object.assign({}, prevFrame, frame.toJSON());
-        
+
         // Don't touch the first frame
         if (!firstFrame)
         {
@@ -206,21 +255,26 @@ p.getFrames = function(compress)
             // animation properties
             frame.validKeys.forEach(function(k)
             {
-                if (!equals(prevFrame[k], frame[k]))
+                if (!equals(prevFrame[k], frame[k]) || (cloneFrame.tw && Object.prototype.hasOwnProperty.call(cloneFrame.tw.p, k)))
                 {
                     animProps.push(k);
                 }
             });
             prevFrame = cloneFrame;
+            if (prevFrame.tw)
+            {
+                Object.assign(prevFrame, prevFrame.tw.p);
+                delete prevFrame.tw;
+            }
             continue;
         }
 
         // De-duplicate the animated properties
-        for (let i = 0, len = allKeys.length; i < len; i++) 
+        for (let i = 0, len = allKeys.length; i < len; i++)
         {
             let k = allKeys[i];
 
-            if (equals(prevFrame[k], frame[k])) 
+            if (equals(prevFrame[k], frame[k]))
             {
                 frame[k] = null;
             }
@@ -228,10 +282,10 @@ p.getFrames = function(compress)
 
         // Remove frames with no properties
         let keys = frame.validKeys;
-        if (!keys.length)
+        if (!keys.length && !frame.tween)
         {
             delete this.frames[index];
-        } 
+        }
         else
         {
             // Add the animated keys
@@ -247,6 +301,11 @@ p.getFrames = function(compress)
 
         // Property remember all the values of the current frame
         prevFrame = cloneFrame;
+        if (prevFrame.tw)
+        {
+            Object.assign(prevFrame, prevFrame.tw.p);
+            delete prevFrame.tw;
+        }
     }
 
     // Clean props that we don't use
@@ -270,10 +329,10 @@ p.getFrames = function(compress)
         }
         return `"${result.join(' ')}"`;
     }
-    else 
+    else
     {
         return DataUtils.stringifySimple(this.frames);
-    }    
+    }
 };
 
 /**
@@ -320,7 +379,8 @@ function equals(a, b)
 p.renderBegin = function()
 {
     // Add the instance name line
-    return `var ${this.localName} = `;
+    const varWord = this.libraryItem.library.meta.outputVersion === "1.0" ? "var" : "const";
+    return `${varWord} ${this.localName} = `;
 };
 
 /**
@@ -342,7 +402,7 @@ p.renderEnd = function(renderer)
         buffer += this.initFrame.render(renderer);
     }
     return buffer;
-};  
+};
 
 /**
  * Render the object as a string
@@ -370,7 +430,7 @@ p.render = function(renderer, mask)
     buffer += this.renderEnd(renderer);
 
     // Add a single frame mask
-    if (mask) 
+    if (mask)
     {
         const func = renderer.compress ? 'ma' : 'setMask';
         buffer += `.${func}(${mask})`;

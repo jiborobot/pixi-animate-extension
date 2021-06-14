@@ -1,0 +1,1 @@
+		new Sprite(data.getTexture("${content}"))

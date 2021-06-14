@@ -22,13 +22,13 @@ const argv = minimist(process.argv.slice(2), {
 // Window to preview in
 let mainWindow = null;
 
-// Quit when all windows are closed. 
-app.on('window-all-closed', function() { 
-    app.quit(); 
+// Quit when all windows are closed.
+app.on('window-all-closed', function() {
+    app.quit();
 });
 
-// This method will be called when Electron has finished 
-// initialization and is ready to create browser windows. 
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
 app.on('ready', function() {
 
     // The default settings
@@ -49,7 +49,8 @@ app.on('ready', function() {
         title: argv.title,
         webPreferences: {
             nodeIntegration: true,
-            webviewTag:true
+            webviewTag:true,
+            contextIsolation: false,
         }
     });
 
@@ -108,9 +109,9 @@ app.on('ready', function() {
         mainWindow.webContents.clearHistory();
 
         // Load the preview window
-        mainWindow.loadURL('file://' + __dirname + '/preview.html'); 
-        mainWindow.on('closed', function() { 
-            mainWindow = null; 
+        mainWindow.loadURL('file://' + __dirname + '/preview.html');
+        mainWindow.on('closed', function() {
+            mainWindow = null;
         });
     });
 });

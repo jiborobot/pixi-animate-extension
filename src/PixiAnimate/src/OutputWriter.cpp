@@ -69,12 +69,15 @@ namespace PixiJS
 	static const std::string moveTo = "m";
 	static const std::string lineTo = "l";
 	static const std::string quadraticCurveTo = "q";
-	static const std::string closePath = "c";
-	static const std::string addHole = "h";
+	static const std::string closePath = "cp";
+	static const std::string beginHole = "bh";
+	static const std::string endHole = "eh";
 
 	// Template
 	static const std::string html = "index.html";
 	static const std::string htmlDebug = "index-debug.html";
+	static const std::string htmlLegacy = "index-legacy.html";
+	static const std::string htmlDebugLegacy = "index-debug-legacy.html";
 
 	static const FCM::Float GRADIENT_VECTOR_CONSTANT = 16384.0;
 
@@ -117,6 +120,11 @@ namespace PixiJS
 		return FCM_SUCCESS;
 	}
 
+	void OutputWriter::AddTweens(JSONNode* tweens)
+	{
+		m_pTweenArray = tweens;
+	}
+
 	FCM::Result OutputWriter::EndDocument()
 	{
 		m_pRootNode->push_back(*m_pShapeArray);
@@ -124,13 +132,18 @@ namespace PixiJS
 		m_pRootNode->push_back(*m_pSoundArray);
 		m_pRootNode->push_back(*m_pTextArray);
 		m_pRootNode->push_back(*m_pTimelineArray);
+		if (m_pTweenArray != NULL)
+		{
+			m_pRootNode->push_back(*m_pTweenArray);
+		}
 
 		JSONNode meta(JSON_NODE);
 		meta.set_name("_meta");
 		meta.push_back(JSONNode("outputFile", m_outputFile));
+		meta.push_back(JSONNode("outputVersion", m_outputVersion));
+		meta.push_back(JSONNode("outputFormat", m_outputFormat));
 		meta.push_back(JSONNode("stageName", m_stageName));
 		meta.push_back(JSONNode("compressJS", m_compressJS));
-		meta.push_back(JSONNode("commonJS", m_commonJS));
 		meta.push_back(JSONNode("compactShapes", m_compactShapes));
 		meta.push_back(JSONNode("nameSpace", m_nameSpace));
 		meta.push_back(JSONNode("loopTimeline", m_loopTimeline));
@@ -177,7 +190,7 @@ namespace PixiJS
 		Utils::GetExtensionPath(extensionPath, m_pCallback);
 		std::string compiler = extensionPath + NODE_COMPILER;
 		std::string publish = "\"" + compiler + "\" --src \"" + m_outputDataFile + "\"";
-		
+
 #ifdef _DEBUG
 		publish += " --debug";
 #endif
@@ -186,13 +199,27 @@ namespace PixiJS
 		// Output the HTML templates
 		if (m_html)
 		{
-			if (m_compressJS)
+			if (m_outputVersion == "1.0")
 			{
-				SaveFromTemplate(html, m_htmlPath);
+				if (m_compressJS)
+				{
+					SaveFromTemplate(htmlLegacy, m_htmlPath);
+				}
+				else
+				{
+					SaveFromTemplate(htmlDebugLegacy, m_htmlPath);
+				}
 			}
 			else
 			{
-				SaveFromTemplate(htmlDebug, m_htmlPath);
+				if (m_compressJS)
+				{
+					SaveFromTemplate(html, m_htmlPath);
+				}
+				else
+				{
+					SaveFromTemplate(htmlDebug, m_htmlPath);
+				}
 			}
 		}
 
@@ -543,13 +570,14 @@ namespace PixiJS
 	// Start of fill region hole
 	FCM::Result OutputWriter::StartDefineHole()
 	{
+		m_pathCmdArray->push_back(JSONNode("", beginHole));
 		return StartDefinePath();
 	}
 
 	// End of fill region hole
 	FCM::Result OutputWriter::EndDefineHole()
 	{
-		m_pathCmdArray->push_back(JSONNode("", addHole));
+		m_pathCmdArray->push_back(JSONNode("", endHole));
 		return FCM_SUCCESS;
 	}
 
@@ -1013,19 +1041,22 @@ namespace PixiJS
 		std::string& libsPath,
 		std::string& stageName,
 		std::string& nameSpace,
+		std::string& outputVersion,
+		std::string& outputFormat,
 		bool html,
 		bool libs,
 		bool images,
 		bool sounds,
 		bool compactShapes,
 		bool compressJS,
-		bool commonJS,
 		bool loopTimeline,
 		bool spritesheets,
 		int spritesheetSize,
 		double spritesheetScale)
 		: m_pCallback(pCallback),
 		m_outputFile(outputFile),
+		m_outputVersion(outputVersion),
+		m_outputFormat(outputFormat),
 		m_outputDataFile(basePath + outputFile + "on"),
 		m_outputImageFolder(basePath + imagesPath),
 		m_outputSoundFolder(basePath + soundsPath),
@@ -1042,7 +1073,6 @@ namespace PixiJS
 		m_sounds(sounds),
 		m_compactShapes(compactShapes),
 		m_compressJS(compressJS),
-		m_commonJS(commonJS),
 		m_loopTimeline(loopTimeline),
 		m_spritesheets(spritesheets),
 		m_spritesheetSize(spritesheetSize),
@@ -1078,6 +1108,8 @@ namespace PixiJS
 		ASSERT(m_pSoundArray);
 		m_pSoundArray->set_name("Sounds");
 		m_strokeStyle.type = INVALID_STROKE_STYLE_TYPE;
+
+		m_pTweenArray = NULL;
 	}
 
 	OutputWriter::~OutputWriter()
@@ -1130,7 +1162,7 @@ namespace PixiJS
 		std::string preview = extensionPath + PREVIEW_APP;
 		std::string cmd = "kill $(ps aux | grep '\\<.*[e]lectron.*\\> " + preview + "' | awk '{print $2}')";
 		popen(cmd.c_str(), "r");
-#endif // _WINDOWS 
+#endif // _WINDOWS
 		return res;
 	}
 

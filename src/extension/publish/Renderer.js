@@ -3,6 +3,7 @@
 const path = require('path');
 const fs = require('fs');
 const DataUtils = require('./utils/DataUtils');
+// const LibraryItem = require('./items/LibraryItem');
 
 /**
  * Buffer our the javascript
@@ -31,12 +32,6 @@ const Renderer = function(library)
      */
     this.compress = library.meta.compressJS;
 
-    /** 
-     * The namespace for the javascript
-     * @property {String} nameSpace
-     */
-    this.nameSpace = library.meta.nameSpace;
-
     /**
      * The name of the stage item
      * @property {String} stageName
@@ -44,19 +39,19 @@ const Renderer = function(library)
     this.stageName = library.meta.stageName;
 
     /**
-     * If the output should be Common JavaScript compatible
-     * @property {Boolean} commonJS
+     * How the output should be handled.
+     * @property {string} outputFormat
      */
-    this.commonJS = library.meta.commonJS;
+    this.outputFormat = library.meta.outputFormat;
 
-    /** 
+    /**
      * If the main stage should loop
      * @property {Boolean} loopTimeline
      */
     this.loopTimeline = library.meta.loopTimeline;
 
-    /** 
-     * Override to the snippets folder
+    /**
+     * Override to the snippets folder (to which the version will be appended)
      * @property {String} snippetsPath
      */
     this.snippetsPath = '';
@@ -79,7 +74,7 @@ p.template = function(type, subs)
     if (!buffer)
     {
         // Load the snippet from the file system
-        buffer = fs.readFileSync(path.join(this.snippetsPath, type + '.txt'), 'utf8');
+        buffer = fs.readFileSync(path.join(this.snippetsPath, '2.0', type + '.txt'), 'utf8');
         this._snippets[type] = buffer;
     }
 
@@ -122,28 +117,38 @@ p.getHeader = function()
 
     if (this.library.hasContainer)
     {
-        classes += "var Container = PIXI.Container;\n";
+        classes += "const Container = animate.Container;\n";
     }
 
     if (this.library.bitmaps.length)
     {
-        classes += "var Sprite = PIXI.Sprite;\n";
-        classes += "var fromFrame = PIXI.Texture.fromFrame;\n";
+        classes += "const Sprite = animate.Sprite;\n";
     }
 
     if (this.library.texts.length)
     {
-        classes += "var Text = PIXI.Text;\n";
+        classes += "const Text = animate.Text;\n";
     }
 
     if (this.library.shapes.length)
     {
-        classes += "var Graphics = PIXI.Graphics;\n";
-        classes += "var shapes = PIXI.animate.ShapesCache;\n"
+        classes += "const Graphics = animate.Graphics;\n";
     }
 
+    const meta = this.library.meta;
     // Get the header
-    return this.template('header', classes);
+    return this.template('header', {
+        version: 2.0,
+        stageName: meta.stageName,
+        width: meta.width,
+        height: meta.height,
+        framerate: meta.framerate,
+        totalFrames: this.library.stage.totalFrames,
+        background: "0x" + meta.background,
+        classes: classes,
+        import: this.outputFormat === 'es6a' ? "import animate from 'pixi-animate';\n" : '',
+        assets: JSON.stringify(this.library.stage.assets, null, '\t')
+    });
 };
 
 /**
@@ -156,10 +161,10 @@ p.getTimelines = function()
 {
     let buffer = "";
     const renderer = this;
-    this.library.timelines.forEach(function(timeline)
+    for (const timeline of this.library.timelines)
     {
         buffer += timeline.render(renderer);
-    });
+    }
     return buffer;
 };
 
@@ -172,7 +177,7 @@ p.getTimelines = function()
  */
 p.getFooter = function()
 {
-    return this.template('footer', this.nameSpace);
+    return this.template('footer', {stageName: this.library.meta.stageName});
 };
 
 /**
@@ -182,21 +187,27 @@ p.getFooter = function()
  */
 p.render = function()
 {
-    const meta = this.library.meta;
     let buffer = "";
     buffer += this.getHeader();
     buffer += this.getTimelines();
     buffer += this.getFooter();
-    if (this.commonJS) {
-        buffer += this.template('commonjs', {
-            nameSpace: this.nameSpace,
-            stageName: meta.stageName,
-            width: meta.width,
-            height: meta.height,
-            framerate: meta.framerate,
-            totalFrames: this.library.stage.totalFrames,
-            background: "0x" + meta.background
-        });
+    if (this.outputFormat === 'cjs') {
+        buffer += this.template('commonjs');
+    }
+    else
+    {
+        let content = "";
+        if (this.outputFormat === 'es6a') {
+            // run setup, export results
+            content = "data.setup(animate);\n";
+            for (const id in this.library._mapById) {
+                const item = this.library._mapById[id];
+                if (item.name) {// && item instanceof LibraryItem) {
+                    content += "const " + item.name + " = data.lib." + item.name + ";\nexport {" + item.name + "};\n";
+                }
+            }
+        }
+        buffer += this.template('module', content);
     }
     return buffer;
 };

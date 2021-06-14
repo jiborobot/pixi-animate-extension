@@ -1,0 +1,6 @@
+		data.lib.${content} = class extends Sprite {
+			constructor() {
+				super(data.getTexture("${content}"));
+			}
+		};
+

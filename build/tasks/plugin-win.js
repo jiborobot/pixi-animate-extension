@@ -6,6 +6,7 @@ module.exports = function(gulp, options, plugins) {
                 targets: ['Clean', 'Build'],
                 properties: { Configuration: 'Release' },
                 architecture: 'x64',
+                errorOnFail: true,
                 fileLoggerParameters: 'LogFile=Build.log;Append;Verbosity=quiet'
             }));
         });

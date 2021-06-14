@@ -1,5 +1,12 @@
 module.exports = function(gulp, options, plugins) {
     gulp.task('pre-install', function(){
-        return plugins.fs.mkdirSync(options.installFolder);
+        if (!/^win/.test(process.platform)) {
+            plugins.fs.mkdirSync(options.installFolder);
+            return gulp.src('.');
+        }
+        else
+        {
+            return gulp.src('.');
+        }
     });
 };

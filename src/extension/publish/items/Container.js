@@ -4,6 +4,9 @@ const util = require('util');
 const LibraryItem = require('./LibraryItem');
 const ContainerInstance = require('../instances/ContainerInstance');
 const SoundInstance = require('../instances/SoundInstance');
+const Matrix = require('../data/Matrix');
+const Command = require('../commands/Command');
+// const globalLog = require('../globalLog');
 
 /**
  * The single frame timeline
@@ -106,7 +109,7 @@ p.onMaskRemoved = function(command, frame)
 /**
  * Get the collection of children to place
  * @method getChildren
- * @return {array<Instance>} Collection of instance objects 
+ * @return {array<Instance>} Collection of instance objects
  */
 p.getChildren = function()
 {
@@ -115,14 +118,18 @@ p.getChildren = function()
     const children = this.children;
     const onMaskAdded = this.onMaskAdded.bind(this);
     const onMaskRemoved = this.onMaskRemoved.bind(this);
-    this.frames.forEach(function(frame)
+    const tweens = this.library.timelineTweensById[this.name];
+    const activeTweenInstances = {};
+    const lastFrameReadForInstances = {};
+    for (let i = 0; i < this.frames.length; ++i)
     {
+        const frame = this.frames[i];
         // Ignore frames without commands
         if (!frame.commands)
         {
-            return;
+            continue;
         }
-        frame.commands.forEach(function(command)
+        frame.commands.forEach((command) =>
         {
             let instance = instancesMap[command.instanceId];
 
@@ -132,20 +139,177 @@ p.getChildren = function()
                 instancesMap[command.instanceId] = instance;
 
                 instance.on('maskAdded', onMaskAdded);
-                instance.on('maskRemoved', onMaskRemoved); 
+                instance.on('maskRemoved', onMaskRemoved);
             }
 
-            // Add to the list of commands for this instance
-            instance.addToFrame(frame.frame, command);
+            // if we skipped frames, check to make sure we didn't need to start any tweens in the meantime
+            // (due to frames not getting exported because easing meant no movement)
+            if (lastFrameReadForInstances[command.instanceId] < frame.frame - 1)
+            {
+                // stop tracking any active tween that we skipped past the end of
+                if (activeTweenInstances[command.instanceId] < frame.frame)
+                {
+                    delete activeTweenInstances[command.instanceId];
+                }
+                // if we aren't currently doing a tween, we should see if we needed to start one on one of those skipped frames
+                if (!activeTweenInstances[command.instanceId])
+                {
+                    // save the transform on the last frame we did read (since we know it didn't change)
+                    const transform = instance.getTransformForFrame(lastFrameReadForInstances[command.instanceId] + 1);
+                    // go through each interim frame to see if there is a tween
+                    for (let f = lastFrameReadForInstances[command.instanceId] + 1; f < frame.frame; ++f)
+                    {
+                        // check for the start of a new tween
+                        if (tweens && tweens.tweensByStartFrame[f])
+                        {
+                            const frameTweens = tweens.tweensByStartFrame[f];
+                            // go through each tween on this frame and see if this instance's geometry matches that of the tween
+                            for (let j = 0; j < frameTweens.length; ++j)
+                            {
+                                if (frameTweens[j].transformMatchesStart(transform))
+                                {
+                                    const end = this.searchAheadForTweenEnd(command.instanceId, frameTweens[j], i);
+                                    // if this instance matches the end geometry of the tween on the end frame, then assume this is the instance
+                                    // that should be tweened
+                                    if (end)
+                                    {
+                                        // consume the tween so that it can't be used by something else
+                                        frameTweens[j].used = true;
+                                        activeTweenInstances[command.instanceId] = end;
+                                        // add the tween here
+                                        instance.startTween(f, frameTweens[j]);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            lastFrameReadForInstances[command.instanceId] = frame.frame;
+
+            // if there is a tween being processed for the given instance ignore the command and
+            // look at the tween
+            if ((command.type === 'Move' || command.type === 'Place') && activeTweenInstances[command.instanceId])
+            {
+                // if the current frame is the end frame of the active tween, we can call off that tween
+                if (frame.frame === activeTweenInstances[command.instanceId])
+                {
+                    delete activeTweenInstances[command.instanceId];
+                }
+            }
+            // otherwise handle the command normally
+            else
+            {
+                // do some extra work to add color transforms into tweens
+                if (command.type === 'ColorTransform')
+                {
+                    // get any tween ending on this frame, in case it already got cleaned up by the move
+                    // and is no longer in the activeTweenInstances dictionary
+                    // unfortunately, this is slow, but accurate since the colors are disconnected from any
+                    // tween data
+                    const activeTween = instance.getTweenEndingOnFrame(activeTweenInstances[command.instanceId]) || instance.getTweenEndingOnFrame(frame.frame);
+                    // if no tween active or this is the start frame of the tween, add to keyframe normally
+                    if (!activeTween || frame.frame === activeTween.startFrame)
+                    {
+                        // Add to the list of commands for this instance, will be added to the keyframe
+                        instance.addToFrame(frame.frame, command);
+                    }
+                    else if (frame.frame === activeTween.endFrame)
+                    {
+                        const colors = {};
+                        // record color data as it would be on the frame
+                        Command.create(command).toFrame(colors);
+                        // now add the start & end colors to the tween (if they are different)
+                        activeTween.addColors(instance.frames[activeTween.startFrame], colors);
+                    }
+                }
+                else
+                {
+                    // Add to the list of commands for this instance
+                    instance.addToFrame(frame.frame, command);
+                }
+            }
+
+            // check for the start of a new tween
+            if (tweens && tweens.tweensByStartFrame[frame.frame])
+            {
+                const frameTweens = tweens.tweensByStartFrame[frame.frame];
+                const transform = instance.getTransformForFrame(frame.frame);
+                // go through each tween on this frame and see if this instance's geometry matches that of the tween
+                for (let j = 0; j < frameTweens.length; ++j)
+                {
+                    if (frameTweens[j].transformMatchesStart(transform))
+                    {
+                        const end = this.searchAheadForTweenEnd(command.instanceId, frameTweens[j], i);
+                        // if this instance matches the end geometry of the tween on the end frame, then assume this is the instance
+                        // that should be tweened
+                        if (end)
+                        {
+                            // consume the tween so that it can't be used by something else
+                            frameTweens[j].used = true;
+                            activeTweenInstances[command.instanceId] = end;
+                            // add the tween here
+                            instance.startTween(frame.frame, frameTweens[j]);
+                            break;
+                        }
+                    }
+                }
+            }
 
             // Add it if it hasn't been added already
-            if (!(instance instanceof SoundInstance) && children.indexOf(instance) == -1) 
+            if (!(instance instanceof SoundInstance) && children.indexOf(instance) == -1)
             {
                 children.push(instance);
             }
         });
-    });
+    }
 };
+
+/**
+ * Searches ahead in the timeline to see if a given instance matches the end of a tween.
+ * @method searchAheadForTweenEnd
+ * @param {string} instanceId
+ * @param {Tween} tween
+ * @private
+ */
+p.searchAheadForTweenEnd = function(instanceId, tween, startIndex)
+{
+    let lastTransform = null;
+    for (let i = startIndex + 1; i < this.frames.length; ++i)
+    {
+        // don't go past our target end frame
+        if (this.frames[i].frame > tween.endFrame)
+        {
+            break;
+        }
+        // get the last transform applied, in case our target frame isn't present, due to easing causing it to not
+        // be a change from previous frames
+        let commands = this.frames[i].commands;
+        for (let j = 0; j < commands.length; ++j)
+        {
+            if (commands[j].instanceId === instanceId && commands[j].type === 'Move')
+            {
+                lastTransform = commands[j].transform;
+            }
+        }
+        // continue to not go past our target end frame
+        if (this.frames[i].frame === tween.endFrame)
+        {
+            break;
+        }
+    }
+    if (!lastTransform)
+    {
+        return null;
+    }
+    const testMatrix = new Matrix(lastTransform);
+    if (tween.matrixMatchesEnd(testMatrix))
+    {
+        return tween.endFrame;
+    }
+    return null;
+}
 
 /**
  * Renderer to use
@@ -168,7 +332,7 @@ p.getContents = function(renderer)
             script = script.replace(/\\n/g, "\n");
             output += script;
         }
-    }    
+    }
 
     return output;
 };
@@ -185,7 +349,7 @@ p.renderAddChildren = function(renderer)
     return buffer;
 };
 
-/** 
+/**
  * Convert instance to add child calls
  * @method renderChildrenMasks
  * @param {Renderer} renderer The reference to renderer
@@ -216,7 +380,7 @@ p.flattenDepthItems = function(items)
     items.sort(function(a, b)
     {
         return b.startFrame - a.startFrame;
-    }); 
+    });
 
     for(let i = 0; i < items.length; i++)
     {
@@ -232,7 +396,7 @@ p.flattenDepthItems = function(items)
     return result;
 };
 
-/** 
+/**
  * Convert instance to add child calls
  * @method renderChildren
  * @param {Renderer} renderer The reference to renderer
@@ -249,7 +413,7 @@ p.renderChildren = function(renderer)
         let map = {};
 
         // Find all of the top nodes with no layer
-        for(let i = 0; i < len; i++) 
+        for(let i = 0; i < len; i++)
         {
             let instance = this.children[i];
             if (!instance.placeAfter)
@@ -262,13 +426,13 @@ p.renderChildren = function(renderer)
                     instance: instance.id,
                     startFrame: instance.startFrame,
                     placeAfter: 0,
-                    children: [] 
+                    children: []
                 };
                 map[instance.id] = item;
                 items.push(item);
             }
         }
-        // Go through the rest of the items and 
+        // Go through the rest of the items and
         // add them to the depth sorted
         while(cloned.length)
         {
@@ -287,7 +451,7 @@ p.renderChildren = function(renderer)
                         instance: instance.id,
                         startFrame: instance.startFrame,
                         placeAfter: instance.placeAfter,
-                        children: [] 
+                        children: []
                     };
 
                     // nest under the parent
@@ -308,16 +472,16 @@ p.renderChildren = function(renderer)
 
         // Reverse the items to add in reverse order
         depthSorted.reverse();
-        
+
         // Render to the stage
         for(let i = 0; i < depthSorted.length; i++)
         {
             let instance = this.instancesMap[depthSorted[i]];
-            
+
             if (!instance.renderable) continue;
 
             buffer += this.renderInstance(renderer, instance);
-            
+
         }
     }
     return buffer;

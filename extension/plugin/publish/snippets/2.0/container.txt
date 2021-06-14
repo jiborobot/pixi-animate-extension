@@ -1,0 +1,7 @@
+		data.lib.${id} = class extends Container {
+			constructor() {
+				super();
+				${contents}
+			}
+		};
+

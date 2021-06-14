@@ -1,0 +1,7 @@
+		data.lib.${id} = class extends MovieClip {
+			constructor() {
+				super(${options});
+				${contents}
+			}
+		};
+

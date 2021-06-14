@@ -21,6 +21,8 @@
  *
  * @brief This file contains interface for IFlashApplicationService.
  *        IFlashApplicationService provides Flash Application level services.
+ *
+ * @deprecated This file is deprecated. Please use IApplicationService.h.
  */
 
 #ifndef IFLASH_APPLICATION_SERVICE_H_
@@ -52,6 +54,8 @@ namespace Application
          * @brief Defines the universally-unique Interface ID for IFlashApplicationService.
          *
          * @note  Textual Representation: {CF97A574-E99B-43AB-931A-1C3ABB2A98E6}
+         *
+         * @deprecated This constant is deprecated. Please use IID_IAPPLICATION_SERVICE.
          */
         FCM::ConstFCMIID IID_IFLASH_APPLICATION_SERVICE =
             {0xcf97a574, 0xe99b, 0x43ab, {0x93, 0x1a, 0x1c, 0x3a, 0xbb, 0x2a, 0x98, 0xe6}};
@@ -72,6 +76,8 @@ namespace Application
          * @class IFlashApplicationService
          *
          * @brief This service provides Flash application-level services.
+         *
+         * @deprecated This interface is deprecated. Please use IApplicationService.
          */
         BEGIN_DECLARE_INTERFACE(IFlashApplicationService, IID_IFLASH_APPLICATION_SERVICE)
 
@@ -82,6 +88,8 @@ namespace Application
              *         Active FLA document
              *
              * @return On success, FCM_SUCCESS is returned; else an error code is returned.
+             *
+             * @deprecated This function is deprecated. Please use IApplicationService::GetActiveFLADocument().
              */
             virtual FCM::Result _FCMCALL GetActiveFLADocument(DOM::PIFLADocument& pDocument) = 0;
 
@@ -101,6 +109,8 @@ namespace Application
              *         ((version      ) & 0xFF) gives the Build number.
              *
              * @return On success, FCM_SUCCESS is returned; else an error code is returned.
+             *
+             * @deprecated This function is deprecated. Please use IApplicationService::GetVersion().
              */
             virtual FCM::Result _FCMCALL GetVersion(FCM::U_Int32& version) = 0;
 
@@ -118,6 +128,8 @@ namespace Application
              *
              * @note   The caller of this function must release the 
              *         memory for 'ppLanguageCode' using IFCMCalloc::Free().
+             *
+             * @deprecated This function is deprecated. Please use IApplicationService::GetLanguageCode().
              */
             virtual FCM::Result _FCMCALL GetLanguageCode(StringRep8* ppLanguageCode) = 0;
 

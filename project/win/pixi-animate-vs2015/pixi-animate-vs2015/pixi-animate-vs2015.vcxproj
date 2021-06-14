@@ -151,6 +151,7 @@
     <ClInclude Include="..\..\..\..\src\ThirdParty\libjson_7.6.1\libjson\_internal\Source\JSONWorker.h" />
     <ClInclude Include="..\..\..\..\src\ThirdParty\libjson_7.6.1\libjson\_internal\Source\JSON_Base64.h" />
     <ClInclude Include="..\..\..\..\src\ThirdParty\libjson_7.6.1\libjson\_internal\Source\NumberToString.h" />
+    <ClInclude Include="..\..\..\..\src\PixiAnimate\include\TweenWriter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\PixiAnimate\src\DocType.cpp" />
@@ -173,6 +174,7 @@
     <ClCompile Include="..\..\..\..\src\ThirdParty\libjson_7.6.1\libjson\_internal\Source\JSONWorker.cpp" />
     <ClCompile Include="..\..\..\..\src\ThirdParty\libjson_7.6.1\libjson\_internal\Source\JSONWriter.cpp" />
     <ClCompile Include="..\..\..\..\src\ThirdParty\libjson_7.6.1\libjson\_internal\Source\libjson.cpp" />
+    <ClCompile Include="..\..\..\..\src\PixiAnimate\src\TweenWriter.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

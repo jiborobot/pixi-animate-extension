@@ -1,0 +1,7 @@
+		const ${id} = class extends MovieClip {
+			constructor(mode) {
+				super(mode, ${duration}, false);
+				${contents}
+			}
+		};
+

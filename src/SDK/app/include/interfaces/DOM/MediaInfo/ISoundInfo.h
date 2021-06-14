@@ -45,7 +45,7 @@ namespace DOM
     {
         /**
          * @brief Defines the universally-unique interface ID for 
-         *        ISoundInfo
+         *        ISoundInfo.
          *
          * @note  Textual Representation: {9FA0514D-45F6-462D-B2F4-0C541E54C457}
          */

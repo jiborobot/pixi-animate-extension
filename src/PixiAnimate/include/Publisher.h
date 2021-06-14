@@ -43,6 +43,7 @@
 #include "OutputWriter.h"
 #include "TimelineWriter.h"
 #include "PluginConfiguration.h"
+#include "TweenWriter.h"
 
  /* -------------------------------------------------- Forward Decl */
 
@@ -143,9 +144,9 @@ namespace PixiJS
 
 		FCM::Result Init();
 
-		FCM::Result ExportLibraryItems(FCM::FCMListPtr pLibraryItemList);
+		FCM::Result ExportLibraryItems(FCM::FCMListPtr pLibraryItemList, PixiJS::TweenWriter *pTweenWriter);
 
-		FCM::Result CopyRuntime(const std::string& outputFolder, const bool& compressJS);
+		FCM::Result CopyRuntime(const std::string& outputFolder, const bool& compressJS, const std::string& outputVersion);
 
 	private:
 

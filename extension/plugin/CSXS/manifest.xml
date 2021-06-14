@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="6.0" ExtensionBundleId="com.jibo.PixiAnimate" ExtensionBundleVersion="1.4.1"
+<ExtensionManifest Version="6.0" ExtensionBundleId="com.jibo.PixiAnimate" ExtensionBundleVersion="2.0.0"
 		ExtensionBundleName="PixiAnimate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<ExtensionList>
-		<Extension Id="com.jibo.PixiAnimate.PublishSettings" Version="1.4.1" />
-		<Extension Id="com.jibo.PixiAnimate.Plugin" Version="1.4.1" />
+		<Extension Id="com.jibo.PixiAnimate.PublishSettings" Version="2.0.0" />
+		<Extension Id="com.jibo.PixiAnimate.Plugin" Version="2.0.0" />
 	</ExtensionList>
 	<ExecutionEnvironment>
 		<HostList>
-			<Host Name="FLPR" Version="15.0" />
+			<Host Name="FLPR" Version="20.0" />
 		</HostList>
 		<LocaleList>
 			<Locale Code="All" />
 		</LocaleList>
 		<RequiredRuntimeList>
-			<RequiredRuntime Name="CSXS" Version="6.0" />
+			<RequiredRuntime Name="CSXS" Version="9.0" />
 		</RequiredRuntimeList>
 	</ExecutionEnvironment>
 	<DispatchInfoList>
 		<Extension Id="com.jibo.PixiAnimate.PublishSettings">
 			<DispatchInfo>
 				<Resources>
-    				<MainPath>./dialog/index.html</MainPath>
-                    <ScriptPath>./dialog/host.jsx</ScriptPath>
-                    <CEFCommandLine>
-                        <Parameter>--enable-nodejs</Parameter>
-                        <Parameter>--mixed-context</Parameter>
-                    </CEFCommandLine>
+				<MainPath>./dialog/index.html</MainPath>
+					<ScriptPath>./dialog/host.jsx</ScriptPath>
+					<CEFCommandLine>
+						<Parameter>--enable-nodejs</Parameter>
+						<Parameter>--mixed-context</Parameter>
+					</CEFCommandLine>
 				</Resources>
 				<Lifecycle>
 					<AutoVisible>true</AutoVisible>
@@ -34,7 +34,7 @@
 					<Type>ModalDialog</Type>
 					<Geometry>
 						<Size>
-							<Height>570</Height>
+							<Height>580</Height>
 							<Width>400</Width>
 						</Size>
 					</Geometry>
@@ -44,7 +44,7 @@
 		<Extension Id="com.jibo.PixiAnimate.Plugin">
 			<DispatchInfo>
 				<Resources>
-    				<MainPath>./plugin/fcm.xml</MainPath>
+					<MainPath>./plugin/fcm.xml</MainPath>
 				</Resources>
 				<Lifecycle>
 					<AutoVisible>true</AutoVisible>

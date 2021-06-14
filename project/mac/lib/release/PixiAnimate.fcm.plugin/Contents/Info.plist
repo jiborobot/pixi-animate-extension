@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>17G9016</string>
+	<string>19G2021</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
@@ -31,17 +31,21 @@
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
-	<string>9F2000</string>
+	<string>12D4e</string>
+	<key>DTPlatformName</key>
+	<string>macosx</string>
 	<key>DTPlatformVersion</key>
-	<string>GM</string>
+	<string>11.1</string>
 	<key>DTSDKBuild</key>
-	<string>17E189</string>
+	<string>20C63</string>
 	<key>DTSDKName</key>
-	<string>macosx10.13</string>
+	<string>macosx11.1</string>
 	<key>DTXcode</key>
-	<string>0941</string>
+	<string>1240</string>
 	<key>DTXcodeBuild</key>
-	<string>9F2000</string>
+	<string>12D4e</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.9</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © - Adobe Systems Incorporated.  All rights reserved.</string>
 </dict>

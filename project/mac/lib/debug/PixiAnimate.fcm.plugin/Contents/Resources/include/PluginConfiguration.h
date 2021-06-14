@@ -41,8 +41,10 @@
 #define DOCTYPE_DESCRIPTION					"This document can be used to author content for Pixi.js."
 
 /* The value of RUNTIME_FOLDER_NAME must be the name of the runtime folder present in extension. */
-#define RUNTIME_ROOT_FOLDER_NAME            "runtime"
-#define RUNTIME_ROOT_FOLDER_NAME_DEBUG      "runtime-debug"
+#define RUNTIME_ROOT_FOLDER_NAME              "runtime/v2"
+#define RUNTIME_ROOT_FOLDER_NAME_DEBUG        "runtime-debug/v2"
+#define RUNTIME_ROOT_FOLDER_NAME_LEGACY       "runtime/v1"
+#define RUNTIME_ROOT_FOLDER_NAME_DEBUG_LEGACY "runtime-debug/v1"
 
 /* The directory inside of the extension to get the output templates */
 #define TEMPLATE_FOLDER_NAME                "template/"

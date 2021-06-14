@@ -1,0 +1,6 @@
+		const Stage = data.lib.${id} = class extends MovieClip {
+			constructor() {
+				super(0, ${duration}, ${loop}, ${framerate} ${labels});
+				${contents}
+			}
+		};

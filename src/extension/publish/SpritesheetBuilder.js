@@ -1,6 +1,6 @@
 const electron = require('electron');
 const ipc = electron.ipcMain;
-const BrowserWindow = electron.BrowserWindow;  // Native browser window 
+const BrowserWindow = electron.BrowserWindow;  // Native browser window
 
 /**
  * Create a renderer to generate the spritesheets.
@@ -21,7 +21,8 @@ const SpritesheetBuilder = function(settings, assetsPath, done)
         height: 600,
         show: false,
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            contextIsolation: false,
         }
     });
 
@@ -37,13 +38,13 @@ const SpritesheetBuilder = function(settings, assetsPath, done)
     renderer.webContents.on('did-finish-load', () => {
 
         // Support commandline debugging
-        const init = assetsPath === __dirname ? 
-            assetsPath + "/spritesheets" : 
+        const init = assetsPath === __dirname ?
+            assetsPath + "/spritesheets" :
             require.resolve('./spritesheets/index');
 
         renderer.webContents.send('init', init);
         renderer.webContents.send('settings', JSON.stringify(settings));
-    });  
+    });
 };
 
 module.exports = SpritesheetBuilder;

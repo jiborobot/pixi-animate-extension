@@ -27,8 +27,6 @@ var plugins = {
     path: require('path'),
     fs: require('fs'),
     shell: require('gulp-shell'),
-    sequence: require('gulp-sequence').use(gulp),
-    gutil: require('gulp-util'),
     rename: require('gulp-rename'),
     eslint: require('gulp-eslint'),
     install: require('gulp-install'),
@@ -37,7 +35,7 @@ var plugins = {
     source: require('vinyl-source-stream'),
     msbuild: require('gulp-msbuild'),
     build: require('./build/bundle'),
-    uglify: require('gulp-uglify-harmony'),
+    uglify: require('gulp-terser'),
     gulpif: require('gulp-if')
 };
 

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>${stageName}</title>
+        <meta name="generator" content="PixiAnimate Extension">
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    </head>
+    <body>
+        <canvas id="stage" width="${width}" height="${height}"></canvas>
+        <script src="${libsPath}pixi.min.js"></script>
+        <script src="${libsPath}pixi-animate.min.js"></script>
+        <script type="module">
+            import data from './${outputFile}';
+            var scene = new PIXI.animate.Scene({
+                view: document.getElementById("stage"),
+                width: ${width},
+                height: ${height},
+                backgroundColor: 0x${background},
+                antialias: true
+            });
+            data.setup(PIXI.animate);
+            scene.load(data);
+        </script>
+    </body>
+</html>

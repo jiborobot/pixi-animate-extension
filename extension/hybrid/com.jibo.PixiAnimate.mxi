@@ -1,0 +1,38 @@
+<?xml version="1.0.0" encoding="UTF-8" standalone="no"?>
+<macromedia-extension
+	name="Pixi Animate"
+	id="com.jibo.PixiAnimate"
+	requires-restart="true"
+	version="2.0.0"
+	icon="logo.png">
+	<author name="Pixi Animate"/>
+	<description>
+		<![CDATA[Commands for Exporting, Optimizing and Publish HTML5 Canvas documents]]>
+	</description>
+	<license-agreement>
+		<![CDATA[MIT]]>
+	</license-agreement>
+ 	<products>
+		<product version="20" primary="true" name="Flash"/>
+	</products>
+	<files>
+		<file destination="" file-type="CSXS" products="" source="PixiAnimate.zxp"/>
+		<file source="logo.png" destination="$ExtensionSpecificEMStore" />
+
+		<file source="JSFLLibraries/ArrayUtils.jsfl" destination="$Flash/JSFLLibraries/" />
+		<file source="JSFLLibraries/ObjectUtils.jsfl" destination="$Flash/JSFLLibraries/" />
+		<file source="JSFLLibraries/Command.jsfl" destination="$Flash/JSFLLibraries/" />
+		<file source="JSFLLibraries/JSON.jsfl" destination="$Flash/JSFLLibraries/" />
+		<file source="JSFLLibraries/XULWindow.jsfl" destination="$Flash/JSFLLibraries/" />
+
+		<file source="Commands/Timeline/Animation Event Label.jsfl" destination="$Flash/Commands/Timeline/" />
+		<file source="Commands/Timeline/AnimationEventLabel.json" destination="$Flash/Commands/Timeline/" />
+
+		<file source="Commands/Optimizing/Optimize Graphics.jsfl" destination="$Flash/Commands/Optimizing/" />
+		<file source="Commands/Optimizing/Optimize Keyframes.jsfl" destination="$Flash/Commands/Optimizing/" />
+		<file source="Commands/Optimizing/OptimizeKeyframes.json" destination="$Flash/Commands/Optimizing/" />
+
+		<file source="Commands/Utilities/Copy Layers To Bitmap.jsfl" destination="$Flash/Commands/Utilities/" />
+
+	</files>
+</macromedia-extension>

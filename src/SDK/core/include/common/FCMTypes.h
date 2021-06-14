@@ -26,7 +26,9 @@
 #define FCM_TYPES_H_
 
 #include "FCMPreConfig.h"
-
+#if defined(__GNUC__) && defined(__APPLE__)
+#include <sys/types.h>
+#endif
 
 namespace FCM
 {
@@ -48,56 +50,56 @@ namespace FCM
         /** 
          * @typedef U_Int8
          * 
-         * @brief   Type to define an unsigned 8 bit value. 
+         * @brief   Type to define an unsigned 8-bit value. 
          */
         typedef unsigned    _int8       U_Int8;
 
         /** 
          * @typedef S_Int8
          * 
-         * @brief   Type to define a signed 8 bits value. 
+         * @brief   Type to define a signed 8-bit value. 
          */
         typedef signed      _int8       S_Int8;
 
         /** 
          * @typedef U_Int16
          * 
-         * @brief   Type to define an unsigned 16 bits value.
+         * @brief   Type to define an unsigned 16-bit value.
          */
         typedef unsigned    _int16      U_Int16; 
 
         /** 
          * @typedef S_Int16
          * 
-         * @brief   Type to define a signed 16 bits value.
+         * @brief   Type to define a signed 16-bit value.
          */
         typedef signed      _int16      S_Int16;
 
         /** 
          * @typedef U_Int32
          * 
-         * @brief   Type to define an unsigned 32 bits value
+         * @brief   Type to define an unsigned 32-bit value.
          */
         typedef unsigned    _int32      U_Int32;
 
         /** 
          * @typedef S_Int32
          * 
-         * @brief   Type to define a signed 32 bits value
+         * @brief   Type to define a signed 32-bit value.
          */
         typedef signed      _int32      S_Int32;
 
         /** 
          * @typedef U_Int64
          * 
-         * @brief   Type to define a unsigned size 64 bits value
+         * @brief   Type to define a unsigned size 64-bit value.
          */
         typedef unsigned    _int64      U_Int64;
 
         /** 
          * @typedef S_Int64
          * 
-         * @brief   Type to define a signed 64 bits value
+         * @brief   Type to define a signed 64-bit value.
          */
         typedef signed      _int64      S_Int64;
 
@@ -117,6 +119,12 @@ namespace FCM
      */
     typedef double                  Double;
 
+	/**
+	*  @typedef Long
+	*
+	*  @brief   Type to define a 64-bit two's complement integer.
+	*/
+	typedef long                  Long;
 
     /** 
      *  @typedef Result
@@ -232,6 +240,69 @@ namespace FCM
 
     } VarType;
 
+	/**
+	* @enum  TextureMappingType
+	*
+	*/
+	typedef enum {
+
+		/** Represents a default type */
+		textureMappingType_None = 0,
+
+		/** Represents Cylindrical type. */
+		textureMappingType_Cylinder,
+
+		/** Represents Sphere type. */
+		textureMappingType_Sphere
+
+	} TextureMappingType;
+
+	typedef enum {
+		/**
+		* @enum BlendMode
+		*/
+		/** Normal */
+		NORMAL_BLEND_MODE,
+
+		/** Layer */
+		LAYER_BLEND_MODE,
+
+		/** Darken */
+		DARKEN_BLEND_MODE,
+
+		/** Multiply */
+		MULTIPLY_BLEND_MODE,
+
+		/** Lighten */
+		LIGHTEN_BLEND_MODE,
+
+		/** Screen */
+		SCREEN_BLEND_MODE,
+
+		/** Overlay */
+		OVERLAY_BLEND_MODE,
+
+		/** Hardlight */
+		HARDLIGHT_BLEND_MODE,
+
+		/** Add */
+		ADD_BLEND_MODE,
+
+		/** Substract */
+		SUBTRACT_BLEND_MODE,
+
+		/** Difference */
+		DIFFERENCE_BLEND_MODE,
+
+		/** Invert */
+		INVERT_BLEND_MODE,
+
+		/** Alpha */
+		ALPHA_BLEND_MODE,
+
+		/** Erase */
+		ERASE_BLEND_MODE
+	} BlendMode;
 
      /**
      * @struct VARIANT
@@ -310,77 +381,77 @@ namespace FCM
     /** 
      *  @typedef FCMIID
      *
-     *  @brief   Represents the interface ID type
+     *  @brief   Represents the interface ID type.
      */
     typedef FCMGUID FCMIID;
 
     /** 
      *  @typedef FCMCLSID
      *
-     *  @brief   Represents the class ID type
+     *  @brief   Represents the class ID type.
      */
     typedef FCMGUID FCMCLSID;
 
     /** 
      *  @typedef SRVCID
      *
-     *  @brief   Represents the service ID type
+     *  @brief   Represents the service ID type.
      */
     typedef FCMGUID SRVCID;
 
     /** 
      *  @typedef ConstFCMIID
      *
-     *  @brief   Represents the constant interface ID type
+     *  @brief   Represents the constant interface ID type.
      */
     typedef const FCMIID        ConstFCMIID;
 
     /** 
      *  @typedef ConstFCMCLSID
      *
-     *  @brief   Represents the constant class ID type
+     *  @brief   Represents the constant class ID type.
      */
     typedef const FCMIID        ConstFCMCLSID;
 
     /** 
      *  @typedef ConstRefFCMIID
      *
-     *  @brief   Represents the constant reference to interface ID
+     *  @brief   Represents the constant reference to interface ID.
      */
     typedef ConstFCMCLSID&      ConstRefFCMIID;
 
     /** 
      *  @typedef ConstRefFCMCLSID
      *
-     *  @brief   Represents the constant reference to class ID
+     *  @brief   Represents the constant reference to class ID.
      */
     typedef ConstFCMCLSID&      ConstRefFCMCLSID;
     
     /** 
      *  @typedef FCMNotifyID
      *
-     *  @brief   The FCM notification ID type
+     *  @brief   The FCM notification ID type.
      */
     typedef FCMGUID  FCMNotifyID;
 
     /** 
      *  @typedef PFCMNotifyID
      *
-     *  @brief   The pointer to FCM notification ID
+     *  @brief   The pointer to FCM notification ID.
      */
     typedef FCMGUID  * PFCMNotifyID;
 
     /** 
      *  @typedef ConstFCMNotifyID
      *
-     *  @brief   The constant FCM notification ID
+     *  @brief   The constant FCM notification ID.
      */
     typedef const FCMNotifyID   ConstFCMNotifyID;
 
     /** 
      *  @typedef ConstRefFCMNotifyID
      *
-     *  @brief   The reference to constant FCM notification ID
+     *  @brief   The reference to constant FCM notification ID.
      */
     typedef const FCMNotifyID & ConstRefFCMNotifyID;
 

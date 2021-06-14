@@ -7,7 +7,7 @@ const Instance = require('./Instance');
 const SYNCHED = 2;
 
 /**
- * The bitmap object
+ * The Graphic object
  * @class GraphicInstance
  * @extends Instance
  * @constructor

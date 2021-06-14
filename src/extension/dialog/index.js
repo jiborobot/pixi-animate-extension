@@ -14,13 +14,14 @@
     // UI Elements
     var $body = $('body');
     var $outputFile = $('#outputFile');
+    var $outputVersion = $("#outputVersion");
     var $htmlPath = $("#htmlPath");
     var $imagesPath = $("#imagesPath");
     var $soundsPath = $("#soundsPath");
     var $libsPath = $("#libsPath");
     var $compactShapes = $("#compactShapes");
     var $compressJS = $("#compressJS");
-    var $commonJS = $("#commonJS");
+    var $outputFormat = $("#outputFormat");
     var $namespace = $("#namespace");
     var $stageName = $("#stageName");
     var $html = $("#html");
@@ -46,7 +47,7 @@
             arg = arguments[i];
             if (typeof arg == "function")
             {
-                callback = arg;    
+                callback = arg;
             }
             else
             {
@@ -95,7 +96,7 @@
         }
     });
 
-    function isReadyToPublish() { 
+    function isReadyToPublish() {
         return isValidInput($outputFile)
             && isValidInput($htmlPath)
             && isValidInput($namespace)
@@ -120,7 +121,6 @@
             // Booleans options
             $compactShapes.checked = ifBoolOr(data[SETTINGS + "CompactShapes"], true);
             $compressJS.checked = ifBoolOr(data[SETTINGS + "CompressJS"], true);
-            $commonJS.checked = data[SETTINGS + "CommonJS"] == "true";
             $html.checked = ifBoolOr(data[SETTINGS + "HTML"], true);
             $libs.checked = ifBoolOr(data[SETTINGS + "Libs"], true);
             $images.checked = ifBoolOr(data[SETTINGS + "Images"], true);
@@ -143,6 +143,21 @@
             $stageName.value = data[SETTINGS + "StageName"];
             $spritesheetSize.value = data[SETTINGS + "SpritesheetSize"] || 1024;
             $spritesheetScale.value = data[SETTINGS + "SpritesheetScale"] || 1.0;
+
+            $outputVersion.value = data[SETTINGS + "OutputVersion"] || "2.0";
+
+            var outputFormat = data[SETTINGS + "OutputFormat"];
+            var oldCommonJS = ifBoolOr(data[SETTINGS + "CommonJS"], false);
+            if (!outputFormat)
+            {
+                outputFormat = oldCommonJS ? 'cjs' : 'es6';
+            }
+            $outputFormat.value = outputFormat;
+
+            var dependencies = $$('.setting-dependency');
+            for (var i = 0, len = dependencies.length; i < len; i++) {
+                handleChanges.call(dependencies[i]);
+            }
 
             // Global options
             $hiddenLayers.checked = data["PublishSettings.IncludeInvisibleLayer"] == "true";
@@ -168,7 +183,6 @@
         // Booleans
         data[SETTINGS + "CompactShapes"] = $compactShapes.checked.toString();
         data[SETTINGS + "CompressJS"] = $compressJS.checked.toString();
-        data[SETTINGS + "CommonJS"] = $commonJS.checked.toString();
         data[SETTINGS + "HTML"] = $html.checked.toString();
         data[SETTINGS + "Libs"] = $libs.checked.toString();
         data[SETTINGS + "Images"] = $images.checked.toString();
@@ -187,6 +201,9 @@
         data[SETTINGS + "SpritesheetSize"] = $spritesheetSize.value.toString();
         data[SETTINGS + "SpritesheetScale"] = $spritesheetScale.value.toString();
 
+        data[SETTINGS + "OutputVersion"] = $outputVersion.value.toString();
+        data[SETTINGS + "OutputFormat"] = $outputFormat.value.toString();
+
         // Global options
         data["PublishSettings.IncludeInvisibleLayer"] = $hiddenLayers.checked.toString();
 
@@ -199,7 +216,7 @@
     }
 
     function isLoaded()
-    { 
+    {
         $body.className = $body.className.replace('loading', '');
     }
 
@@ -213,7 +230,45 @@
             toggle.className += " disabled";
         }
     }
-        
+
+    function handleChanges()
+    {
+        var dependents = $$('.setting-dependent');
+        var disabled;
+        for (var i = 0, len = dependents.length; i < len; i++) {
+            var dependent = dependents[i];
+            if (dependent.dataset.dependency !== this.id) {
+                continue;
+            }
+            var when = dependent.dataset.when;
+            if (when === 'checked') {
+                disabled = !this.checked;
+                dependent.className = dependent.className.replace('hidden', '');
+                if (disabled) {
+                    dependent.className += " hidden";
+                }
+            }
+            else {
+                disabled = when.indexOf('!') === 0 ? this.value === when.substring(1) : this.value !== when;
+                dependent.className = dependent.className.replace('hidden', '');
+                if (disabled) {
+                    dependent.className += " hidden";
+                }
+            }
+        }
+        // do a quick check for output format, because it is complicated
+        if ($outputVersion.value === '1.0') {
+            if ($outputFormat.value.indexOf('es6') > -1) {
+                $outputFormat.value = 'es5';
+            }
+        }
+        else {
+            if ($outputFormat.value === 'es5') {
+                $outputFormat.value = 'es6';
+            }
+        }
+    }
+
     function refreshColorTheme()
     {
         var skinInfo = JSON.parse(cep.getHostEnvironment()).appSkinInfo;
@@ -225,7 +280,7 @@
     {
         csInterface.closeExtension();
     }
-    
+
     function winPathToURI(path)
     {
         while (path.indexOf("\\") > -1)
@@ -252,7 +307,7 @@
             {
                 var path = require('path');
                 $outputFile.value = path.relative(parentPath, output);
-            } 
+            }
         });
     }
 
@@ -273,17 +328,22 @@
     {
         toggles[i].onchange = onToggleInput.bind(toggles[i]);
     }
+    // Handle settings with non-standard dependencies
+    var dependencies = $$('.setting-dependency');
+    for (i = 0, len = dependencies.length; i < len; i++) {
+        dependencies[i].onchange = handleChanges.bind(dependencies[i]);
+    }
 
     if (!cep)
     {
         isLoaded();
         return;
-    } 
+    }
 
     csInterface = new CSInterface();
     csInterface.setWindowTitle('PixiAnimate Publish Settings');
 
-    // Gets the style information such as color info from the skinInfo, 
+    // Gets the style information such as color info from the skinInfo,
     // and redraw all UI controls of your extension according to the style info.
     refreshColorTheme();
     csInterface.addEventListener(CSInterface.THEME_COLOR_CHANGED_EVENT, refreshColorTheme);
@@ -300,7 +360,7 @@
 
         // Handle set state from the saved settings
         csInterface.addEventListener("com.adobe.events.flash.extension.setstate", restoreState);
-        
+
         // Restore from publish settings
         exec('getPublishSettings', restoreState);
     });

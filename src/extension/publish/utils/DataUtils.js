@@ -6,7 +6,7 @@
  */
 var DataUtils = {
 
-    /** 
+    /**
      * Round a number to decimal places
      * @method toPrecision
      * @param {Number} val Number to round
@@ -16,7 +16,7 @@ var DataUtils = {
     toPrecision: function(val, places)
     {
         places = places || 2;
-        const num = Math.pow(10, places); 
+        const num = Math.pow(10, places);
         return Math.round(val * num) / num;
     },
 
@@ -76,8 +76,8 @@ var DataUtils = {
         {
             const max = 255;
             const r = Math.round(arr[0] * max);
-            const b = Math.round(arr[2] * max);
-            const g = Math.round(arr[4] * max);
+            const g = Math.round(arr[2] * max);
+            const b = Math.round(arr[4] * max);
             const hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
             return this.compressColors(hex);
         }
@@ -90,13 +90,14 @@ var DataUtils = {
      * @method optimizeColorTransforms
      * @param {Object} frames
      */
-    optimizeColorTransforms: function(frames) 
+    optimizeColorTransforms: function(frames)
     {
-        let tints = {};
+        const tints = {};
+        const tintsTw = {};
         for (let i in frames)
         {
             let frame = frames[i];
-            if (!frame.c) 
+            if (!frame.c)
             {
                 return;
             }
@@ -106,13 +107,25 @@ var DataUtils = {
                 return;
             }
             tints[i] = tint;
+            if (frames[i].tween)
+            {
+                tint = this.simpleTint(frames[i].tween.color.end);
+                if (tint === null) {
+                    return;
+                }
+                tintsTw[i] = tint;
+            }
         }
 
         for (let i in frames)
         {
-            let frame = frames[i];
+            const frame = frames[i];
             delete frame.c;
             frame.t = tints[i];
+            if (frame.tween && tintsTw[i])
+            {
+                frame.tween.replaceColorWithTint(tints[i], tintsTw[i]);
+            }
         }
     }
 };

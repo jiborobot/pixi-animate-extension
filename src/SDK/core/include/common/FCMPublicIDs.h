@@ -43,7 +43,7 @@ namespace FCM
      * @def   kFCMDictKey_ServiceDict
      *
      * @brief Service Dictionary Key. The value for this key should be a dictionary
-     *        that defines services the plugin provides.
+     *        that defines services the plug-in provides.
      */
     #define kFCMDictKey_ServiceDict                "FCM.Service.Dictionary"
 
@@ -60,7 +60,7 @@ namespace FCM
      * @def   kFCMComponent
      *
      * @brief FCM component key. The value for this key should be a dictionary
-     *        that defines the components in the plugin.
+     *        that defines the components in the plug-in.
      */
     #define kFCMComponent                    "FCM.Component"
 
@@ -113,7 +113,17 @@ namespace FCM
      */
     const FCMNotifyID NOTIFYID_FCM_SHUTDOWN =
         {0xe6fe94c6, 0x6184, 0x4859, {0x91, 0xa6, 0x57, 0x29, 0xce, 0x44, 0x65, 0xe6}};
-    
+
+
+    /**
+    * @brief Defines the universally-unique class ID to
+    *        create object that implements IFCMPair pair interface.
+    *
+    * @note  Textual Representation: {F10D51C8-265E-4B2E-B065-768DA027C05B}
+    */
+    const FCMCLSID CLSID_IFCMPair =
+        {0xf10d51c8, 0x265e, 0x4b2e, {0xb0, 0x65, 0x76, 0x8d, 0xa0, 0x27, 0xc0, 0x5b}};
+
 };
 
 

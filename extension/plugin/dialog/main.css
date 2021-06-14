@@ -1,7 +1,15 @@
+body, html {
+    height: 100%;
+}
+
 .dialog {
-    width:360px;
-    margin:15px auto 0;
+    height: calc(100% - 30px);
+    width: 380px;
+    margin: 15px 0 0 20px;
     text-align:left;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .dialog-row {
@@ -11,6 +19,7 @@
 
 .dialog-row.right {
     text-align:right;
+    margin-right: 20px;
 }
 
 .dialog-row .side {
@@ -29,6 +38,9 @@
     width:40px;
     text-align: center;
     margin-bottom:5px;
+}
+.dialog-row .select:not(.small) {
+    width: 260px;
 }
 .dialog-row .indent {
     padding-left:80px;
@@ -107,6 +119,11 @@ html * {
     user-select: none;
 }
 
+.scrollable {
+    overflow-y: auto;
+    flex-shrink: 1;
+    flex-grow: 1;
+}
 
 .text, .select {
     border:1px solid rgba(0,0,0,0.9);
@@ -141,6 +158,10 @@ body.dark .select {
 body.light .text,
 body.light .select {
     background-color:#ebeaea;
+}
+
+.hidden {
+    display: none !important;
 }
 
 .text.disabled,
@@ -193,14 +214,14 @@ body.light .select:focus {
 body.dark .button {
     color:#bfbfbf;
     text-shadow: 0px -1px 0px rgba(0,0,0,1);
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1), 
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1),
         0 1px 0 0 rgba(255,255,255,0.1);
 }
 
 body.light .button {
     color:#222;
     text-shadow: 0px 1px 0px rgba(255,255,255,0.2);
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4), 
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4),
         0 1px 0 0 rgba(255,255,255,0.4);
 }
 
@@ -219,7 +240,7 @@ body.light .button:hover {
 
 /*.button:active {
     background-color:rgba(0,0,0,0.2);
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15), 
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15),
         0 1px 0 0 rgba(255,255,255,0.15);
 }*/
 
@@ -264,7 +285,7 @@ body.light .button:active {
 .checkbox {
     display:inline-block;
     width: 18px;
-    height:14px;    
+    height:14px;
     position: relative;
     vertical-align: middle;
 }
@@ -277,11 +298,12 @@ body.light .button:active {
     top: 0;
     border-radius: 0;
     border:1px solid rgba(0,0,0,0.9);
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1), 
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1),
         0 1px 0 0 rgba(255,255,255,0.1);
     background: -webkit-linear-gradient(bottom, rgba(0,0,0,0.1) 0%, rgba(255,255,255,.15) 100%);
     background-color:transparent;
 }
+
 
 .checkbox label:hover {
     background-color:rgba(255,255,255,0.1);
@@ -316,6 +338,24 @@ body.dark .checkbox label:after {
 
 body.light .checkbox label:after {
     border-color: #222;
+}
+
+.checkbox.disabled label {
+    box-shadow: none;
+    background: -webkit-linear-gradient(bottom, rgba(0, 0, 0, 0.1) 0%, rgba(255, 255, 255, .05) 100%);
+    pointer-events: none;
+}
+
+.checkbox.disabled label:after {
+    border-color: #333;
+}
+
+body.dark .checkbox.disabled label:after {
+    border-color: #888;
+}
+
+body.light .checkbox.disabled label:after {
+    border-color: #444;
 }
 
 .checkbox input[type=checkbox]:checked + label:after {

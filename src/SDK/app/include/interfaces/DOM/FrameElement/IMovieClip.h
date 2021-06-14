@@ -42,61 +42,6 @@ namespace DOM
 
 /* -------------------------------------------------- Enums */
 
-namespace DOM
-{
-    namespace FrameElement
-    {
-        /**
-         * @enum BlendMode
-         *
-         * @brief Defines the different Blend modes available in Flash for the movieclip instance.
-         */
-        enum BlendMode
-        {
-            /** Normal */
-            NORMAL_BLEND_MODE,
-
-            /** Layer */
-            LAYER_BLEND_MODE,
-
-            /** Darken */
-            DARKEN_BLEND_MODE,
-
-            /** Multiply */
-            MULTIPLY_BLEND_MODE,
-
-            /** Lighten */
-            LIGHTEN_BLEND_MODE,
-
-            /** Screen */
-            SCREEN_BLEND_MODE,
-
-            /** Overlay */
-            OVERLAY_BLEND_MODE,
-
-            /** Hardlight */
-            HARDLIGHT_BLEND_MODE,
-
-            /** Add */
-            ADD_BLEND_MODE,
-
-            /** Substract */
-            SUBTRACT_BLEND_MODE,
-
-            /** Difference */
-            DIFFERENCE_BLEND_MODE,
-
-            /** Invert */
-            INVERT_BLEND_MODE,
-
-            /** Alpha */
-            ALPHA_BLEND_MODE,
-
-            /** Erase */
-            ERASE_BLEND_MODE
-        };
-    }
-}
 
 
 /* -------------------------------------------------- Macros / Constants */

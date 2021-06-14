@@ -61,7 +61,7 @@ const STYLE_PROPS = {
  * @param {Renderer} renderer
  * @return {string} Buffer of object
  */
-p.renderContent = function(renderer, undefined)
+p.renderContent = function(renderer)
 {
     const style = this.style;
     const options = {};
@@ -81,11 +81,11 @@ p.renderContent = function(renderer, undefined)
 
     if (fontStyle == "bold")
         options.fontWeight = fontStyle;
-    
+
     // Check for default color
     if (style.fontColor != "#000000")
         options.fill = DataUtils.compressColors(style.fontColor);
-    
+
     // Add letterSpacing if we have it
     if (style.letterSpacing)
         options.letterSpacing = style.letterSpacing;
@@ -134,7 +134,7 @@ p.renderContent = function(renderer, undefined)
         const width = this.initFrame.bounds.width * this.initFrame.sx;
         this.initFrame.x += isCenter ? width / 2 : width;
         this.initFrame.x += this.initFrame.bounds.x * this.initFrame.sx;
-        this.initFrame.y += this.initFrame.bounds.y * this.initFrame.sy; 
+        this.initFrame.y += this.initFrame.bounds.y * this.initFrame.sy;
     }
     return buffer;
 }

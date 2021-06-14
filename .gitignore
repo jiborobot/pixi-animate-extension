@@ -18,6 +18,7 @@ project/win/pixi-animate-vs2015/x64/*/*.lib
 project/win/pixi-animate-vs2015/x64/*/*.pdb
 project/win/pixi-animate-vs2015/x64/*/*.exp
 project/win/pixi-animate-vs2015/pixi-animate-vs2015/x64/*/*.idb
+project/win/pixi-animate-vs2015/.vs
 *.obj
 *.tlog
 *.log
@@ -30,3 +31,4 @@ project/win/pixi-animate-vs2015/pixi-animate-vs2015/x64/*/*.idb
 *.res
 src/PixiAnimate/lib/win32/PixiAnimate.fcm.plugin
 tests/
+/ExManCmd_win

@@ -22,7 +22,7 @@ app.on('ready', function() {
         alert("Must use Electron v1.8.2 or greater. Install using 'npm install -g electron-prebuilt'");
         quit();
     }
-    else if (!argv.src) 
+    else if (!argv.src)
     {
         alert("Source must be path to data output.");
         quit();
@@ -32,7 +32,7 @@ app.on('ready', function() {
         alert("Data file must be valid JSON.");
         quit();
     }
-    else 
+    else
     {
         // For measuring performance
         const startTime = process.hrtime()[1];
@@ -68,7 +68,7 @@ app.on('ready', function() {
                 console.log(`\nExecuted in ${executionTime} seconds\n`);
             }
             quit();
-        });        
+        });
     }
 });
 
@@ -76,15 +76,15 @@ function quit() {
     app.quit();
 }
 
-function alert(message) 
+function alert(message)
 {
     const nativeImage = electron.nativeImage;
     let dialog;
-    try 
+    try
     {
         dialog = require('dialog');
     }
-    catch(e) 
+    catch(e)
     {
         dialog = electron.dialog;
     }
@@ -92,9 +92,9 @@ function alert(message)
     // Use the assets if it's setup, debugging purposes
     const icon = path.resolve(argv.assets || __dirname, 'assets/icon.png');
 
-    dialog.showMessageBox({
+    dialog.showMessageBoxSync({
         type: 'error',
-        message: 'A publishing error occured', 
+        message: 'A publishing error occured',
         detail: argv.debug && message instanceof Error ? message.stack : String(message),
         buttons: ['Close'],
         icon: nativeImage.createFromPath(icon)

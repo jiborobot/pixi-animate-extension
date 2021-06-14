@@ -6,8 +6,10 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 const Library = require('./Library');
 const Renderer = require('./Renderer');
+const RendererLegacy = require('./RendererLegacy');
 const DataUtils = require('./utils/DataUtils');
 const SpritesheetBuilder = require('./SpritesheetBuilder');
+const globalLog = require('./globalLog');
 
 /**
  * The application to publish the JSON data to JS output buffer
@@ -24,12 +26,15 @@ let Publisher = function(dataFile, compress, debug, assetsPath)
      */
     this._dataFile = dataFile;
 
-    /** 
+    /**
      * The data published from Flash
      * @property {Object} _data
      * @private
      */
     this._data = JSON.parse(fs.readFileSync(dataFile, "utf8"));
+
+    let outputFile = path.join(process.cwd(), this._data._meta.outputFile + 'on');
+    fs.writeFileSync(outputFile, JSON.stringify(this._data, null, 4));
 
     // override the compress
     if (compress)
@@ -41,13 +46,13 @@ let Publisher = function(dataFile, compress, debug, assetsPath)
      * The library of assets to publish
      * @property {Library} library
      */
-    this.library = new Library(this._data);
+    this.library = new Library(this._data, this._data._meta.outputVersion != '1.0');
 
     /**
      * The composer to render output
      * @property {Renderer} composer
      */
-    this.renderer = new Renderer(this.library);
+    this.renderer = this._data._meta.outputVersion == '1.0' ? new RendererLegacy(this.library) : new Renderer(this.library);
 
     /**
      * If we are running in debug mode
@@ -184,14 +189,18 @@ p.run = function(done)
     try {
         this.exportAssets(() => {
             try {
-                const buffer = this.publish();
-                this.destroy();
-                if (this.debug) {
-                    buffer.split('\n').forEach((line) => {
-                        console.log(line);
-                    });
-                }
-                done();
+                this.publish((err, buffer) => {
+                    if (err) {
+                        return done(err);
+                    }
+                    this.destroy();
+                    if (this.debug) {
+                        buffer.split('\n').forEach((line) => {
+                            console.log(line);
+                        });
+                    }
+                    done();
+                });
             }
             catch(e) {
                 done(e);
@@ -207,40 +216,60 @@ p.run = function(done)
  * Save the output stream
  * @method publish
  */
-p.publish = function()
+p.publish = function(done)
 {
     const meta = this._data._meta;
 
     // Get the javascript buffer
     let buffer = this.renderer.render();
 
+    const debug = this.debug;
+
+    const write = function()
+    {
+        // Save the output file
+        let outputFile = path.join(process.cwd(), meta.outputFile);
+        fs.writeFileSync(outputFile, buffer);
+
+        if (debug && globalLog.length)
+        {
+            fs.writeFileSync(path.join(path.dirname(outputFile), 'log.txt'), globalLog.join('\n'));
+        }
+
+        done(null, buffer);
+    }
+
     if (meta.compressJS)
     {
-        // Run through uglify
-        const UglifyJS = require('uglify-js');
-        let result = UglifyJS.minify(buffer, {
-            fromString: true 
-        });
-        buffer = result.code;
+        // Run through terser
+        const Terser = require('terser');
+        Terser.minify(buffer, {module: meta.outputVersion !== '1.0', ecma: meta.outputVersion === '1.0' ? 5 : 2015})
+        .then((result) => {
+            if (result.error)
+            {
+                done(result.error);
+            }
+            else
+            {
+                buffer = result.code;
+                write();
+            }
+        })
+        .catch(done);
     }
     else
     {
         // Run through js beautifier
         const beautify = require('js-beautify').js_beautify;
-        buffer = beautify(buffer, { 
+        buffer = beautify(buffer, {
             indent_size: 4,
             preserve_newlines: true,
             space_after_anon_function: true,
             brace_style: "collapse-preserve-inline",
             break_chained_methods: true
         });
+        write();
     }
-
-    // Save the output file
-    let outputFile = path.join(process.cwd(), meta.outputFile);
-    fs.writeFileSync(outputFile, buffer);
-
-    return buffer;
 };
 
 module.exports = Publisher;

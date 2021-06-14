@@ -1,0 +1,4 @@
+
+		data.stage = data.lib.${stageName};
+	}
+};

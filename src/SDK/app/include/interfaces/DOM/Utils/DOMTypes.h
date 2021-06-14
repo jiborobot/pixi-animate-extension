@@ -52,6 +52,8 @@ namespace DOM
             /** Quadratic bezier curve */ 
             QUAD_BEZIER_SEGMENT,
 
+            /** Cubic bezier curve */
+            CUBIC_BEZIER_SEGMENT,
         };
 
 
@@ -158,7 +160,7 @@ namespace DOM
 /**
  * @def   TWIPS_PER_PIXEL
  *
- * @brief Twips is defined as twentieth of a pixel
+ * @brief Twips is defined as twentieth of a pixel.
  */
 #define TWIPS_PER_PIXEL 20
 
@@ -173,7 +175,7 @@ namespace DOM
         /**
          * @struct COLOR
          *
-         * @brief  Defines a color in RGBA format
+         * @brief  Defines a color in RGBA format.
          */
         struct COLOR
         {
@@ -194,7 +196,7 @@ namespace DOM
         /**
          * @struct MATRIX2D
          *
-         * @brief  Represents a transformation matrix
+         * @brief  Represents a transformation matrix.
          */
         struct MATRIX2D
         {
@@ -217,6 +219,57 @@ namespace DOM
             FCM::Float ty;
         };
 
+		/**
+		* @struct MATRIX3D
+		*
+		* @brief  Represents a 3d transformation matrix.
+		* Assumes the matrix is in this format
+		| m00 m01 m02 m03 |				| a  b  -   0 |
+		| m10 m11 m12 m13 |   ======>   | c  d  -   0 |
+		| m20 m21 m22 m23 |				| -  -  -   0 |
+		| m30 m31 m32 m33 | 			| tx ty	tz  1 |				
+		*/
+		struct MATRIX3D
+		{
+			FCM::Float m00;
+
+			FCM::Float m01;
+
+			FCM::Float m02;
+
+			FCM::Float m03;
+
+			FCM::Float m10;
+
+			FCM::Float m11;
+
+			FCM::Float m12;
+
+			FCM::Float m13;
+
+			FCM::Float m20;
+
+			FCM::Float m21;
+
+			FCM::Float m22;
+
+			FCM::Float m23;
+
+			FCM::Float m30;
+
+			FCM::Float m31;
+
+			FCM::Float m32;
+
+			FCM::Float m33;
+
+			MATRIX3D(){ 
+				m00 = 0.0, m01 = 0.0, m02 = 0.0, m03 = 0;
+				m10 = 0.0, m11 = 0.0, m12 = 0.0, m13 = 0;
+				m20 = 0.0, m21 = 0.0, m22 = 0.0, m23 = 0;
+				m30 = 0.0, m31 = 0.0, m32 = 0.0, m33 = 0;
+			}
+		};
 
         /**
          * @struct POINT2D
@@ -264,7 +317,7 @@ namespace DOM
         /**
          * @struct RECT
          *
-         * @brief  Defines a Rectangle
+         * @brief  Defines a rectangle.
          */
         struct RECT
         {
@@ -313,6 +366,29 @@ namespace DOM
 
 
         /**
+        * @struct CUBIC_BEZIER_CURVE
+        *
+        * @brief  This structure defines a cubic bezier curve. A cubic
+        *         bezier curve can be defined using two anchor points and two
+        *         control point.
+        */
+        struct CUBIC_BEZIER_CURVE
+        {
+            /** Anchor point 1 */
+            POINT2D anchor1;
+
+            /** Control point 1 */
+            POINT2D control1;
+
+            /** Control point 2 */
+            POINT2D control2;
+            
+            /** Anchor point 2 */
+            POINT2D anchor2;
+        };
+
+
+        /**
          * @struct SEGMENT
          *
          * @brief  This structure defines a segment. 
@@ -333,6 +409,9 @@ namespace DOM
                 /** Quadratic bezier curve */
                 QUAD_BEZIER_CURVE quadBezierCurve;
 
+                /** Cubic bezier curve */
+                CUBIC_BEZIER_CURVE cubicBezierCurve;
+                
                 /** Straight line */
                 LINE line;
             };
@@ -342,7 +421,7 @@ namespace DOM
         /**
          * @struct GRADIENT_COLOR_POINT
          *
-         * @brief  Map of a color and its position in the gradient 
+         * @brief  Map of a color and its position in the gradient.
          */
         struct GRADIENT_COLOR_POINT
         {
@@ -351,6 +430,17 @@ namespace DOM
 
             /** Position of the color in the gradient */
             FCM::U_Int8 pos;
+        };
+        
+        /**
+         * @struct RIG_PROPERTIES
+         *
+         * @brief  structure for layer parenting properties
+         */
+        struct RIG_PROPERTIES
+        {
+            /** rig matrix */
+            MATRIX2D matrix;
         };
     }
 }

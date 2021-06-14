@@ -16,6 +16,8 @@
 		"157ca6f8-2e54-371b-8649-bb34db8f2d63" /* internalJSONNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "a47eaabc-0062-3299-b91c-06037678b948" /* internalJSONNode.cpp */; };
 		"18fd347f-e3e6-39d6-871d-61dfdd6a372d" /* JSONWorker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "474ed136-b062-30a7-9d9b-ab0938ef331d" /* JSONWorker.cpp */; };
 		"1a74ed6f-1455-3f15-9f44-14bb8e20b635" /* JSONIterators.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "9bbfd7be-ac57-384d-984e-1afc2e0ed3b2" /* JSONIterators.cpp */; };
+		21CE3984260BD9CD0038E2B5 /* TweenWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21CE3983260BD9CD0038E2B5 /* TweenWriter.cpp */; };
+		21CE3985260BD9CD0038E2B5 /* TweenWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21CE3983260BD9CD0038E2B5 /* TweenWriter.cpp */; };
 		"24fed128-bfa3-35fe-9403-2c37eed95a7d" /* libjson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "7bfcfcd8-dedc-3680-b9e1-95891cdfa343" /* libjson.cpp */; };
 		"35666a89-c77e-30b3-8294-49cb42bb3457" /* libjson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "7bfcfcd8-dedc-3680-b9e1-95891cdfa343" /* libjson.cpp */; };
 		"3d6b6be0-13dd-3221-921c-9cd8689e5891" /* JSONWorker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "474ed136-b062-30a7-9d9b-ab0938ef331d" /* JSONWorker.cpp */; };
@@ -65,6 +67,25 @@
 		"12cad407-b42b-3fd9-afb2-7703a0006994" /* Utils.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; path = Utils.cpp; sourceTree = "<group>"; };
 		"18b8044a-5909-32aa-9155-c8c1788376b5" /* JSONChildren.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; path = JSONChildren.cpp; sourceTree = "<group>"; };
 		"1f9d9071-e694-3006-9299-60f935a277f6" /* CoreServices.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CoreServices.framework; sourceTree = "<group>"; };
+		21975B4C266815BC007CAC2C /* JSONDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONDebug.h; sourceTree = "<group>"; };
+		21975B4D266815BC007CAC2C /* JSONGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONGlobals.h; sourceTree = "<group>"; };
+		21975B4E266815BD007CAC2C /* JSONAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONAllocator.h; sourceTree = "<group>"; };
+		21975B4F266815BD007CAC2C /* JSONSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONSingleton.h; sourceTree = "<group>"; };
+		21975B50266815BD007CAC2C /* JSONPreparse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONPreparse.h; sourceTree = "<group>"; };
+		21975B51266815BD007CAC2C /* JSON_Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON_Base64.h; sourceTree = "<group>"; };
+		21975B52266815BD007CAC2C /* internalJSONNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = internalJSONNode.h; sourceTree = "<group>"; };
+		21975B53266815BD007CAC2C /* JSONDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONDefs.h; sourceTree = "<group>"; };
+		21975B54266815BD007CAC2C /* JSONStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONStats.h; sourceTree = "<group>"; };
+		21975B55266815BD007CAC2C /* JSONStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONStream.h; sourceTree = "<group>"; };
+		21975B56266815BD007CAC2C /* NumberToString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NumberToString.h; sourceTree = "<group>"; };
+		21975B57266815BD007CAC2C /* JSONValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONValidator.h; sourceTree = "<group>"; };
+		21975B58266815BD007CAC2C /* JSONMemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONMemory.h; sourceTree = "<group>"; };
+		21975B59266815BD007CAC2C /* JSONWorker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONWorker.h; sourceTree = "<group>"; };
+		21975B5A266815BD007CAC2C /* JSONNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONNode.h; sourceTree = "<group>"; };
+		21975B5B266815BD007CAC2C /* JSONMemoryPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONMemoryPool.h; sourceTree = "<group>"; };
+		21975B5C266815BD007CAC2C /* JSONChildren.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONChildren.h; sourceTree = "<group>"; };
+		21975B5D266815BD007CAC2C /* JSONSharedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONSharedString.h; sourceTree = "<group>"; };
+		21CE3983260BD9CD0038E2B5 /* TweenWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TweenWriter.cpp; sourceTree = "<group>"; };
 		"242250eb-c22a-31fb-b531-b0b9cb9b75e8" /* ApplicationServices.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ApplicationServices.framework; sourceTree = "<group>"; };
 		"37ac9b87-549b-3c4b-935a-8ff607750468" /* DocType.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; path = DocType.cpp; sourceTree = "<group>"; };
 		"3cdca8a2-9ab8-3515-bea5-e404f7131120" /* JSONMemory.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; path = JSONMemory.cpp; sourceTree = "<group>"; };
@@ -133,6 +154,7 @@
 			isa = PBXGroup;
 			children = (
 				75FD74531C6255BD00042B73 /* OutputWriter.cpp */,
+				21CE3983260BD9CD0038E2B5 /* TweenWriter.cpp */,
 				75FD74541C6255BD00042B73 /* TimelineWriter.cpp */,
 				"9f0688c3-3f04-3a69-a219-c79da92040db" /* Main.cpp */,
 				"37ac9b87-549b-3c4b-935a-8ff607750468" /* DocType.cpp */,
@@ -159,7 +181,6 @@
 				9A0112631BFB99D200E546CC /* include */,
 				F5977F0909B7D3970058A43E /* PixiAnimate.xcconfigs */,
 				F5D3576909491A7D008C36CA /* Frameworks */,
-				811C721C097349F9007B1073 /* Libraries */,
 				F5D3574E0948ECD5008C36CA /* Resources */,
 				F5D3574D0948ECCD008C36CA /* Sources */,
 				F5D357400948EBCB008C36CA /* Products */,
@@ -203,6 +224,24 @@
 		"a27a8ef3-ba50-3980-a679-f6f6a9a13ebf" /* ThirdParty/libjson_7.6.1/libjson/_internal/Source */ = {
 			isa = PBXGroup;
 			children = (
+				21975B52266815BD007CAC2C /* internalJSONNode.h */,
+				21975B51266815BD007CAC2C /* JSON_Base64.h */,
+				21975B4E266815BD007CAC2C /* JSONAllocator.h */,
+				21975B5C266815BD007CAC2C /* JSONChildren.h */,
+				21975B4C266815BC007CAC2C /* JSONDebug.h */,
+				21975B53266815BD007CAC2C /* JSONDefs.h */,
+				21975B4D266815BC007CAC2C /* JSONGlobals.h */,
+				21975B58266815BD007CAC2C /* JSONMemory.h */,
+				21975B5B266815BD007CAC2C /* JSONMemoryPool.h */,
+				21975B5A266815BD007CAC2C /* JSONNode.h */,
+				21975B50266815BD007CAC2C /* JSONPreparse.h */,
+				21975B5D266815BD007CAC2C /* JSONSharedString.h */,
+				21975B4F266815BD007CAC2C /* JSONSingleton.h */,
+				21975B54266815BD007CAC2C /* JSONStats.h */,
+				21975B55266815BD007CAC2C /* JSONStream.h */,
+				21975B57266815BD007CAC2C /* JSONValidator.h */,
+				21975B59266815BD007CAC2C /* JSONWorker.h */,
+				21975B56266815BD007CAC2C /* NumberToString.h */,
 				"a47eaabc-0062-3299-b91c-06037678b948" /* internalJSONNode.cpp */,
 				"459c7060-1b49-3a88-86f6-61f76eb39315" /* JSONAllocator.cpp */,
 				"18b8044a-5909-32aa-9155-c8c1788376b5" /* JSONChildren.cpp */,
@@ -280,13 +319,14 @@
 		F5D357240948E8C4008C36CA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 1240;
 			};
 			buildConfigurationList = F5D357250948E8C4008C36CA /* Build configuration list for PBXProject "PixiAnimate.mp" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = F5D357220948E8C4008C36CA;
@@ -383,6 +423,7 @@
 				"4ebc8a76-6e5e-38d1-bd1e-a44ac9b6cf09" /* JSONDebug.cpp in Sources */,
 				"80eccaa8-142f-385a-a04f-942a76afb0bf" /* JSONIterators.cpp in Sources */,
 				"a667ac45-a68a-3e4c-b8f0-e54bfac215bd" /* JSONMemory.cpp in Sources */,
+				21CE3984260BD9CD0038E2B5 /* TweenWriter.cpp in Sources */,
 				"5a4158f3-d11a-3378-b5bb-b87611f2f747" /* JSONNode.cpp in Sources */,
 				"8ed2c99a-79c7-3e25-a978-d21041af1b50" /* JSONNode_Mutex.cpp in Sources */,
 				"411a4dda-fc45-3eaf-a9da-35ee6f8160a6" /* JSONPreparse.cpp in Sources */,
@@ -411,6 +452,7 @@
 				"d09e3c89-9e1e-31ad-a1e3-7b33bd5e56b5" /* JSONDebug.cpp in Sources */,
 				"1a74ed6f-1455-3f15-9f44-14bb8e20b635" /* JSONIterators.cpp in Sources */,
 				"cf030e3d-ea74-3c90-9ae4-541a93a2e770" /* JSONMemory.cpp in Sources */,
+				21CE3985260BD9CD0038E2B5 /* TweenWriter.cpp in Sources */,
 				"81e0cad2-705a-3d5e-a15a-311ce49f6b73" /* JSONNode.cpp in Sources */,
 				"da95733a-774c-306e-867b-6f491e3c38e4" /* JSONNode_Mutex.cpp in Sources */,
 				"60d764c0-8d8e-3118-8c39-d190f2851cab" /* JSONPreparse.cpp in Sources */,
@@ -430,6 +472,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F5977F0F09B7D4150058A43E /* project_debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DVA_BUNDLE_IDENTIFIER = PixiAnimate.fcm.plugin;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
@@ -454,11 +497,22 @@
 			baseConfigurationReference = F5977F0C09B7D3B80058A43E /* project.xcconfig */;
 			buildSettings = {
 				CLANG_LINK_OBJC_RUNTIME = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -486,6 +540,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F5977F1109B7D41E0058A43E /* project_release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DVA_BUNDLE_IDENTIFIER = PixiAnimate.fcm.plugin;
 				DVA_PRODUCT_NAME = "PixiAnimate Extension";

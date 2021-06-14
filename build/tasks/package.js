@@ -1,5 +1,5 @@
 module.exports = function(gulp, options, plugins) {
-    var output = options.argv.buildDebug ? 
+    var output = options.argv.buildDebug ?
         options.outputDebugName :
         options.outputName;
     var cmd = options.packager + ' -sign ' +
@@ -7,7 +7,7 @@ module.exports = function(gulp, options, plugins) {
         '"' + output + '" ' +
         '"' + options.packagerCert + '" ' +
         '"' + options.packagerPass + '" ' +
-        '-tsa \"http://sha1timestamp.ws.symantec.com/sha1/timestamp\"';
+        '-tsa \"http://timestamp.digicert.com/\"';
     gulp.task('package', plugins.shell.task([cmd], {
         quiet: false
     }));

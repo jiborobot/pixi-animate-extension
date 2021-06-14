@@ -82,12 +82,10 @@ namespace PixiJS
 
 	CPublisher::CPublisher()
 	{
-
 	}
 
 	CPublisher::~CPublisher()
 	{
-
 	}
 
 
@@ -99,8 +97,8 @@ namespace PixiJS
 		return Export(flaDocument, NULL, NULL, publishSettings, dictConfig);
 	}
 
-	// This function will be currently called in "Test-Scene" workflow. 
-	// In future, it might be called in other workflows as well. 
+	// This function will be currently called in "Test-Scene" workflow.
+	// In future, it might be called in other workflows as well.
 	FCM::Result CPublisher::Publish(
 		DOM::PIFLADocument flaDocument,
 		DOM::PITimeline timeline,
@@ -221,7 +219,6 @@ namespace PixiJS
 		bool sounds(true);
 		bool compactShapes(true);
 		bool compressJS(true);
-		bool commonJS(false);
 		bool loopTimeline(true);
 		bool previewNeeded(false);
 		bool spritesheets(true);
@@ -234,6 +231,8 @@ namespace PixiJS
 		std::string nameSpace("lib");
 		std::string imagesPath("images/");
 		std::string soundsPath("sounds/");
+		std::string outputVersion;
+		std::string outputFormat("es6");
 
 		// Sanitize the stage name for JavaScript
 		Utils::GetJavaScriptName(outputFile, stageName);
@@ -247,9 +246,10 @@ namespace PixiJS
 		Utils::ReadStringToBool(publishSettings, (FCM::StringRep8)DICT_SOUNDS, sounds);
 		Utils::ReadStringToBool(publishSettings, (FCM::StringRep8)DICT_COMPACT_SHAPES, compactShapes);
 		Utils::ReadStringToBool(publishSettings, (FCM::StringRep8)DICT_COMPRESS_JS, compressJS);
-		Utils::ReadStringToBool(publishSettings, (FCM::StringRep8)DICT_COMMON_JS, commonJS);
 		Utils::ReadStringToBool(publishSettings, (FCM::StringRep8)DICT_LOOP_TIMELINE, loopTimeline);
 		Utils::ReadStringToBool(publishSettings, (FCM::StringRep8)DICT_SPRITESHEETS, spritesheets);
+		Utils::ReadString(publishSettings, (FCM::StringRep8)DICT_VERSION, outputVersion);
+		Utils::ReadString(publishSettings, (FCM::StringRep8)DICT_OUTPUT_FORMAT, outputFormat);
 		Utils::ReadString(publishSettings, (FCM::StringRep8)DICT_LIBS_PATH, libsPath);
 		Utils::ReadString(publishSettings, (FCM::StringRep8)DICT_IMAGES_PATH, imagesPath);
 		Utils::ReadString(publishSettings, (FCM::StringRep8)DICT_SOUNDS_PATH, soundsPath);
@@ -275,11 +275,12 @@ namespace PixiJS
 #ifdef _DEBUG
 		Utils::Trace(GetCallback(), "Export relative to %s\n", basePath.c_str());
 		Utils::Trace(GetCallback(), " -> Output file : %s\n", outputFile.c_str());
+		Utils::Trace(GetCallback(), " -> Output Version : %s\n", outputVersion.c_str());
+		Utils::Trace(GetCallback(), " -> Output Format : %s\n", outputFormat.c_str());
 		Utils::Trace(GetCallback(), " -> Namespace : %s\n", nameSpace.c_str());
 		Utils::Trace(GetCallback(), " -> Stage Name : %s\n", stageName.c_str());
 		Utils::Trace(GetCallback(), " -> Compact Shapes : %s\n", Utils::ToString(compactShapes).c_str());
 		Utils::Trace(GetCallback(), " -> Compress JS : %s\n", Utils::ToString(compressJS).c_str());
-		Utils::Trace(GetCallback(), " -> Common JS : %s\n", Utils::ToString(commonJS).c_str());
 		Utils::Trace(GetCallback(), " -> Loop Timeline : %s\n", Utils::ToString(loopTimeline).c_str());
         if (html)
         {
@@ -310,6 +311,7 @@ namespace PixiJS
 
 		// Temporary
 		// return FCM_SUCCESS;
+		std::auto_ptr<PixiJS::TweenWriter> tweenWriter(new PixiJS::TweenWriter(GetCallback()));
 
 		std::auto_ptr<OutputWriter> outputWriter(new OutputWriter(GetCallback(),
 			basePath,
@@ -320,13 +322,14 @@ namespace PixiJS
 			libsPath,
 			stageName,
 			nameSpace,
+			outputVersion,
+			outputFormat,
 			html,
 			libs,
 			images,
 			sounds,
 			compactShapes,
 			compressJS,
-			commonJS,
 			loopTimeline,
 			spritesheets,
 			spritesheetSize,
@@ -415,6 +418,7 @@ namespace PixiJS
 			// Generate frame commands for each timeline
 			for (FCM::U_Int32 i = 0; i < timelineCount; i++)
 			{
+
 				Exporter::Service::RANGE range;
 				AutoPtr<ITimelineBuilder> timelineBuilder;
 				ITimelineWriter* timelineWriter;
@@ -445,10 +449,9 @@ namespace PixiJS
 				}
 
 				((TimelineBuilder*)timelineBuilder.m_Ptr)->Build(0, NULL, &timelineWriter);
-			}
 
-			res = outputWriter->EndDocument();
-			ASSERT(FCM_SUCCESS_CODE(res));
+				tweenWriter->ReadTimeline(timeline.m_Ptr, stageName);
+			}
 
 			// Export the library items with linkages
 			FCM::FCMListPtr pLibraryItemList;
@@ -458,7 +461,11 @@ namespace PixiJS
 				return res;
 			}
 
-			ExportLibraryItems(pLibraryItemList);
+			ExportLibraryItems(pLibraryItemList, tweenWriter.get());
+
+			outputWriter->AddTweens(tweenWriter->GetRoot());
+			res = outputWriter->EndDocument();
+			ASSERT(FCM_SUCCESS_CODE(res));
 		}
 		else
 		{
@@ -492,7 +499,7 @@ namespace PixiJS
 		if (libs)
 		{
 			// We are now going to copy the runtime from the zxp package to the output folder.
-			CopyRuntime(basePath + libsPath, compressJS);
+			CopyRuntime(basePath + libsPath, compressJS, outputVersion);
 		}
 
 		if (previewNeeded)
@@ -640,10 +647,10 @@ namespace PixiJS
 
 
 	//
-	// Note: This function is NOT completely implemented but provides guidelines 
-	// on how this can be possibly done.      
+	// Note: This function is NOT completely implemented but provides guidelines
+	// on how this can be possibly done.
 	//
-	FCM::Result CPublisher::ExportLibraryItems(FCM::FCMListPtr pLibraryItemList)
+	FCM::Result CPublisher::ExportLibraryItems(FCM::FCMListPtr pLibraryItemList, PixiJS::TweenWriter *pTweenWriter)
 	{
 		FCM::U_Int32 count = 0;
 		FCM::Result res;
@@ -678,7 +685,7 @@ namespace PixiJS
 				ASSERT(FCM_SUCCESS_CODE(res));
 
 				// Export all its children
-				res = ExportLibraryItems(pChildren);
+				res = ExportLibraryItems(pChildren, pTweenWriter);
 				ASSERT(FCM_SUCCESS_CODE(res));
 			}
 			else
@@ -689,6 +696,17 @@ namespace PixiJS
 				AutoPtr<DOM::LibraryItem::ISymbolItem> pSymbolItem = pLibItem;
 				AutoPtr<DOM::LibraryItem::IMediaItem> pMediaItem = pLibItem;
 
+				if (pSymbolItem)
+				{
+					DOM::ITimeline* timeline;
+					res = pSymbolItem->GetTimeLine(timeline);
+					if (FCM_FAILURE_CODE(res))
+					{
+						Utils::Trace(GetCallback(), "Unable to get timeline for %s: %i\n", libItemName.c_str(), res);
+					}
+					pTweenWriter->ReadTimeline(timeline, libItemName);
+				}
+
 				res = pLibItem->GetProperties(pDict.m_Ptr);
 				ASSERT(FCM_SUCCESS_CODE(res));
 
@@ -697,6 +715,7 @@ namespace PixiJS
 
 				if (FCM_SUCCESS_CODE(res))
 				{
+					Utils::Trace(GetCallback(), "Succeeded at getting info on linkage class key\n");
 					FCM::Boolean hasResource;
 					ResourcePalette* pResPalette = static_cast<ResourcePalette*>(m_pResourcePalette.m_Ptr);
 
@@ -705,20 +724,20 @@ namespace PixiJS
 					if (pSymbolItem)
 					{
 						//
-						// Check if it has been exported already by comparing names of resources 
+						// Check if it has been exported already by comparing names of resources
 						// already exported from the timelines.
 						//
 						res = pResPalette->HasResource(libItemName, hasResource);
 						if (!hasResource)
 						{
-							// Resource is not yet exported. Export it using 
+							// Resource is not yet exported. Export it using
 							// FrameCommandGenerator::GenerateFrameCommands
 						}
 					}
 					else if (pMediaItem)
 					{
 						//
-						// Check if it has been exported already by comparing names of resources 
+						// Check if it has been exported already by comparing names of resources
 						// already exported from the timelines.
 						//
 						res = pResPalette->HasResource(libItemName, hasResource);
@@ -733,7 +752,7 @@ namespace PixiJS
 					{
 						// Use the font name to check if already exported.
 
-						// Use IFontTableGeneratorService::CreateFontTableForFontItem() to create 
+						// Use IFontTableGeneratorService::CreateFontTableForFontItem() to create
 						// a font table and then export it.
 					}
 				}
@@ -745,7 +764,7 @@ namespace PixiJS
 	}
 
 
-	FCM::Result CPublisher::CopyRuntime(const std::string& outputFolder, const bool& compressJS)
+	FCM::Result CPublisher::CopyRuntime(const std::string& outputFolder, const bool& compressJS, const std::string& outputVersion)
 	{
 		FCM::Result res;
 		std::string runtimeFolder;
@@ -760,11 +779,25 @@ namespace PixiJS
 		// Copy the runtime folder
 		if (!compressJS)
 		{
-			runtimeFolder = RUNTIME_ROOT_FOLDER_NAME_DEBUG;
+			if (outputVersion == "1.0")
+			{
+				runtimeFolder = RUNTIME_ROOT_FOLDER_NAME_DEBUG_LEGACY;
+			}
+			else
+			{
+				runtimeFolder = RUNTIME_ROOT_FOLDER_NAME_DEBUG;
+			}
 		}
 		else
 		{
-			runtimeFolder = RUNTIME_ROOT_FOLDER_NAME;
+			if (outputVersion == "1.0")
+			{
+				runtimeFolder = RUNTIME_ROOT_FOLDER_NAME_LEGACY;
+			}
+			else
+			{
+				runtimeFolder = RUNTIME_ROOT_FOLDER_NAME;
+			}
 		}
 		res = Utils::CopyDir(sourceFolder + runtimeFolder, outputFolder, GetCallback());
 
@@ -1010,7 +1043,7 @@ namespace PixiJS
 					res = pTextRun->GetTextStyle(runStyle.m_Ptr);
 					ASSERT(FCM_SUCCESS_CODE(res));
 
-					// Extract text style 
+					// Extract text style
 					res = GetTextStyle(runStyle, textStyle);
 					ASSERT(FCM_SUCCESS_CODE(res));
 
@@ -1912,10 +1945,10 @@ namespace PixiJS
 		ASSERT(pMovieClipInfo);
 		ASSERT(pMovieClipInfo->structSize >= sizeof(MOVIE_CLIP_INFO));
 
-		// LOG(("[AddMovieClip] ObjId: %d ResId: %d PlaceAfter: %d\n", 
+		// LOG(("[AddMovieClip] ObjId: %d ResId: %d PlaceAfter: %d\n",
 		//     objectId, pMovieClipInfo->resourceId, pMovieClipInfo->placeAfterObjectId));
 
-		// Utils::Trace(GetCallback(), "[AddMovieClip] ObjId: %d ResId: %d PlaceAfter: %d, Instance: %s\n", 
+		// Utils::Trace(GetCallback(), "[AddMovieClip] ObjId: %d ResId: %d PlaceAfter: %d, Instance: %s\n",
 		//     objectId, pMovieClipInfo->resourceId, pMovieClipInfo->placeAfterObjectId, instanceName/);
 
 		res = m_timelineWriter->PlaceObject(
@@ -2264,7 +2297,7 @@ namespace PixiJS
 						(FCM::PVoid)str_name.c_str(),
 						(FCM::U_Int32)str_name.length() + 1);
 
-					// Add universal name - Used to refer to it from JSFL. Also, used in 
+					// Add universal name - Used to refer to it from JSFL. Also, used in
 					// error/warning messages.
 					std::string str_uniname = PUBLISHER_UNIVERSAL_NAME;
 					res = pCategory->Add(

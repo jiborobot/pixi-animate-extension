@@ -1,0 +1,1 @@
+		new Graphics().${func}(data.shapes.${stageName}[${id}])
